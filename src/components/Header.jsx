@@ -28,6 +28,8 @@ function Header() {
   const [usuarioAbierto, setUsuarioAbierto] = useState(false);
   const [modoOscuro, setModoOscuro] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const menuRef = useRef(null);
+  const usuarioRef = useRef(null);
 
 
   // ==============================
@@ -52,6 +54,46 @@ function Header() {
     cantidadAnterior.current = cantidadCarrito;
 
   }, [cantidadCarrito]);
+
+
+  useEffect(() => {
+
+  const handleClickFuera = (event) => {
+
+    // Cerrar menú hamburguesa
+    if (
+      menuAbierto &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target)
+    ) {
+      setMenuAbierto(false);
+    }
+
+
+    // Cerrar tarjeta de usuario
+    if (
+      usuarioAbierto &&
+      usuarioRef.current &&
+      !usuarioRef.current.contains(event.target)
+    ) {
+      setUsuarioAbierto(false);
+    }
+
+  };
+
+  document.addEventListener(
+    'mousedown',
+    handleClickFuera
+  );
+
+  return () => {
+    document.removeEventListener(
+      'mousedown',
+      handleClickFuera
+    );
+  };
+
+}, [menuAbierto, usuarioAbierto]);
 
 
   // ==============================
@@ -90,15 +132,40 @@ function Header() {
             MENÚ HAMBURGUESA
         ============================== */}
 
-        <div className="header-menu">
+        <div className="header-menu" ref={menuRef}>
 
           <button
             onClick={() => setMenuAbierto(!menuAbierto)}
           >
             ☰
           </button>
+                
+                {/* ==============================
+            MENÚ HAMBURGUESA
+          ============================== */}
 
-        </div>
+          {menuAbierto && (
+
+          <div className="menu-hamburguesa">
+
+            <nav>
+
+            <Link to="/">
+              Inicio
+            </Link>
+
+            <Link to="/favoritos">
+              Favoritos
+            </Link>
+
+            <Link to="/">
+              Contactanos
+            </Link>
+
+            </nav>
+          </div>
+          )}
+      </div>
 
 
         {/* ==============================
@@ -184,7 +251,7 @@ function Header() {
               USUARIO
           ============================== */}
 
-          <div className="usuario-container">
+          <div className="usuario-container" ref={usuarioRef}>
 
             <button
               onClick={() => setUsuarioAbierto(!usuarioAbierto)}
@@ -223,34 +290,6 @@ function Header() {
 
       </header>
 
-
-      {/* ==============================
-          MENÚ HAMBURGUESA
-      ============================== */}
-
-      {menuAbierto && (
-
-        <div className="menu-hamburguesa">
-
-          <nav>
-
-            <Link to="/">
-              Inicio
-            </Link>
-
-            <Link to="/favoritos">
-              Favoritos
-            </Link>
-
-            <Link to="/">
-              Contactanos
-            </Link>
-
-          </nav>
-
-        </div>
-
-      )}
 
     </>
   );

@@ -40,23 +40,45 @@ function Carrito() {
       <main className="carrito-shell">
 
 
-        {/* ENCABEZADO DEL CARRITO */}
-        <div className="carrito-header">
+        <div className="checkout-progress" aria-label="Progreso de compra">
 
-          <div>
+          <div className="checkout-step checkout-step-active">
+            <span className="checkout-step-circle">
+              1
+            </span>
 
-            <h1 className="carrito-label">
-              Mi carrito
-            </h1>
-
-            <p className="carrito-subtitulo">
-              Revisa tus productos antes de finalizar tu compra.
-            </p>
-
+            <span className="checkout-step-label">
+              Carrito
+            </span>
           </div>
 
+          <div className="checkout-progress-line" />
 
+<<<<<<< Updated upstream
         
+=======
+          <div className="checkout-step">
+            <span className="checkout-step-circle">
+              2
+            </span>
+
+            <span className="checkout-step-label">
+              Datos de envío
+            </span>
+          </div>
+
+          <div className="checkout-progress-line" />
+
+          <div className="checkout-step">
+            <span className="checkout-step-circle">
+              3
+            </span>
+
+            <span className="checkout-step-label">
+              Comprar
+            </span>
+          </div>
+>>>>>>> Stashed changes
 
         </div>
 
@@ -209,7 +231,7 @@ function Carrito() {
 
             <section className="carrito-resumen">
 
-              <div>
+              <div className="carrito-resumen-info">
 
                 <p className="carrito-total-label">
                   Total
@@ -221,6 +243,12 @@ function Carrito() {
 
               </div>
 
+              <Link
+                to="/checkout"
+                className="carrito-checkout"
+              >
+                Finalizar compra
+              </Link>
 
               <button
                 type="button"
