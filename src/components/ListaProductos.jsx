@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
-import { misProductos } from '../data/productos';
 import '../styles/ListaProductos.css';
 import { useEffect, useRef, useState } from 'react';
 import ProductoCard from './ProductoCard';
 import Header from './Header'
 import { useCarrito } from '../context/useCarrito';
 import Hero from './hero.jsx';
+import { useProductos } from '../context/useProductos';
 
 function ListaProductos() {
 
   const { carrito } = useCarrito();
+  const { productos, cargando, error } = useProductos();
   const cantidadCarrito = carrito.reduce(
     (total, item) => total + item.cantidad,
     0
@@ -88,8 +89,9 @@ function ListaProductos() {
 
         {/* PRODUCTOS */}
         <div className="productos-grid">
-
-          {misProductos.map((prod, index) => (
+          {cargando && <p>Cargando productos...</p>}
+          {error && <p>{error}</p>}
+          {!cargando && !error && productos.map((prod, index) => (
             <ProductoCard
               key={prod.id}
               prod={prod}

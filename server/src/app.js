@@ -23,6 +23,27 @@ app.get('/api/db-status', async (_request, response) => {
   }
 });
 
+app.get('/api/productos', async (_request, response) => {
+  try {
+    const [productos] = await pool.query(`
+      SELECT id, nombre, descripcion, precio, descuento, imagen, stock
+      FROM productos
+      ORDER BY id
+    `);
+
+    response.json(productos.map((producto) => ({
+      ...producto,
+      id: String(producto.id),
+      desc: producto.descripcion,
+      precio: Number(producto.precio),
+      descuento: Number(producto.descuento || 0)
+    })));
+  } catch (error) {
+    console.error('No se pudieron cargar los productos:', error);
+    response.status(500).json({ message: 'No se pudieron cargar los productos' });
+  }
+});
+
 async function startServer() {
   await initializeDatabase();
   app.listen(port, () => {

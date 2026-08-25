@@ -1,22 +1,27 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { misProductos } from '../data/productos';
 import '../styles/DetalleProducto.css';
 import Header from './Header';
 import { useCarrito } from '../context/useCarrito';
+import { useProductos } from '../context/useProductos';
 
 function DetalleProducto() {
   const {id} =useParams();
-  const indiceActual= misProductos.findIndex(
+  const { productos, cargando, error } = useProductos();
+  const indiceActual= productos.findIndex(
     (item) => item.id ===id);
-  const producto = misProductos.find((item) => item.id === id);
-  const productoAnterior= misProductos[indiceActual-1];
-  const productoSiguiente = misProductos[indiceActual+1];
+  const producto = productos.find((item) => String(item.id) === id);
+  const productoAnterior= productos[indiceActual-1];
+  const productoSiguiente = productos[indiceActual+1];
   const [cantidad, setCantidad] = useState(1);
   const {agregarAlCarrito} = useCarrito();
 
 
-  if (!producto) {
+  if (cargando) {
+    return <div className="detalle-error"><h2>Cargando producto...</h2></div>;
+  }
+
+  if (error || !producto) {
     return (
       <div className="detalle-error">
         <h2>El producto no existe.</h2>
