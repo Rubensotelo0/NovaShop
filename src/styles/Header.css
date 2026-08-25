@@ -8,7 +8,7 @@
   z-index: 100;
 
   width: 100%;
-  height: 72px;
+  height: 95px;
 
   display: flex;
   align-items: center;
@@ -69,8 +69,8 @@
 }
 
 .header-menu button {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
 
   display: flex;
   align-items: center;
@@ -83,7 +83,7 @@
 
   color: #00385a;
 
-  font-size: 1.45rem;
+  font-size: 1.65rem;
 
   cursor: pointer;
 
@@ -131,7 +131,7 @@
 
   text-decoration: none;
 
-  font-size: 1.55rem;
+  font-size: 2rem;
   font-weight: 800;
 
   letter-spacing: -0.5px;
@@ -171,7 +171,7 @@
   display: flex;
   align-items: center;
 
-  gap: 8px;
+  gap: 10px;
 
   margin-left: auto;
 }
@@ -185,14 +185,14 @@
   display: flex;
   align-items: center;
 
-  width: 190px;
-  height: 40px;
+  width: 230px;
+  height: 46px;
 
   background: rgba(255, 255, 255, 0.7);
 
-  border: 1px solid rgba(0, 56, 90, 0.15);
+  border: 1px solid rgba(0, 56, 90, 0.438);
 
-  border-radius: 10px;
+  border-radius: 15px;
 
   overflow: hidden;
 
@@ -278,7 +278,7 @@
 ========================================= */
 
 .header-buscador button {
-  width: 40px;
+  width: 44px;
   height: 100%;
 
   display: flex;
@@ -325,8 +325,8 @@
 
 .header-acciones > button,
 .usuario-container > button {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
 
   display: flex;
   align-items: center;
@@ -458,14 +458,14 @@
 .menu-hamburguesa {
   position: fixed;
 
-  top: 72px;
+  top: 95px;
   left: 0;
 
   z-index: 99;
 
   width: 270px;
 
-  min-height: calc(100vh - 72px);
+  min-height: calc(100vh - 95px);
 
   padding: 30px 20px;
 

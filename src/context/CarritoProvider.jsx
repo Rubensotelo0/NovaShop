@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
-import CarritoContext from './CarritoContextValue';
+import CarritoContext from './CarritoContext';
 
 export function CarritoProvider({ children }) {
+
+  //Crea un estado llamado carrito, si hay un carrito guardado, úsalo. Si no, comienza con un array vacío.
   const [carrito, setCarrito] = useState(() => {
     const guardado = localStorage.getItem('carrito');
     return guardado ? JSON.parse(guardado) : [];
   });
 
+  //estado de cuando cambia carrito
   useEffect(() => {
     localStorage.setItem('carrito', JSON.stringify(carrito));
   }, [carrito]);
+
 
   const agregarAlCarrito = (producto,cantidad = 1) => {
     setCarrito((carritoActual) => {
@@ -48,6 +52,7 @@ export function CarritoProvider({ children }) {
     });
   };
 
+  //recibe id y elimina del array el producto que tenga ese ID
   const quitarDelCarrito = (id) => {
     setCarrito((carritoActual) =>
       carritoActual.filter((item) => item.id !== id)
