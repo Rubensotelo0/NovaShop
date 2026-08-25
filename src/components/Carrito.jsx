@@ -1,5 +1,5 @@
 import { useCarrito } from '../context/useCarrito';
-import { misProductos } from '../data/productos';
+import { useProductos } from '../context/useProductos';
 import { Link } from 'react-router-dom';
 import '../styles/Carrito.css';
 import Header from './Header';
@@ -13,6 +13,7 @@ function Carrito() {
     vaciarCarrito,
     total
   } = useCarrito();
+  const { productos } = useProductos();
 
 
   // Buscar la información completa de cada producto
@@ -20,8 +21,8 @@ function Carrito() {
   const productosCarrito = carrito
     .map((item) => ({
       ...item,
-      producto: misProductos.find(
-        (prod) => prod.id === item.id
+      producto: productos.find(
+        (prod) => String(prod.id) === String(item.id)
       )
     }))
     .filter((item) => item.producto);

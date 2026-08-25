@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
-import { misProductos } from '../data/productos';
 import ProductoCard from './ProductoCard';
 import Header from './Header';
+import { useProductos } from '../context/useProductos';
 
 import '../styles/ListaProductos.css';
 
 function Favoritos() {
+  const { productos, cargando, error } = useProductos();
   const [favoritos, setFavoritos] = useState(() => {
     const guardados = localStorage.getItem('favoritos');
 
@@ -29,7 +30,7 @@ function Favoritos() {
     });
   };
 
-  const productosFavoritos = misProductos.filter((producto) =>
+  const productosFavoritos = productos.filter((producto) =>
     favoritos.includes(producto.id)
   );
 
@@ -56,7 +57,7 @@ function Favoritos() {
         </section>
 
         {/* PRODUCTOS FAVORITOS */}
-        {productosFavoritos.length > 0 ? (
+        {cargando ? <p>Cargando productos...</p> : error ? <p>{error}</p> : productosFavoritos.length > 0 ? (
 
           <div className="productos-grid">
 

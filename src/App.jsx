@@ -5,10 +5,12 @@ import PageTransition from './components/PageTransition';
 import Favoritos from './components/Favoritos';
 import Carrito from './components/Carrito';
 import { CarritoProvider } from './context/CarritoProvider';
+import { ProductosProvider } from './context/ProductosProvider';
 
 function App() {
   return (
     <BrowserRouter>
+      <ProductosProvider>
       <CarritoProvider>
       <PageTransition>
         <Routes>
@@ -19,6 +21,7 @@ function App() {
         </Routes>
       </PageTransition>
       </CarritoProvider>  
+      </ProductosProvider>
     </BrowserRouter>
   );
 }
