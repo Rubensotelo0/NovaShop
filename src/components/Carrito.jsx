@@ -54,9 +54,6 @@ function Carrito() {
 
           <div className="checkout-progress-line" />
 
-<<<<<<< Updated upstream
-        
-=======
           <div className="checkout-step">
             <span className="checkout-step-circle">
               2
@@ -78,7 +75,6 @@ function Carrito() {
               Comprar
             </span>
           </div>
->>>>>>> Stashed changes
 
         </div>
 
