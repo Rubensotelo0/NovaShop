@@ -11,7 +11,7 @@
   --text: #262626;
   --text-light: #737373;
 
-  --background: #f7f7f8;
+  --background: #ffffff;
   --card: #ffffff;
   --border: #e5e5e5;
 
@@ -577,6 +577,7 @@ body {
 ========================================= */
 
 .producto-card {
+  position: relative;
   overflow: hidden;
 
   background: var(--card);
@@ -598,9 +599,24 @@ body {
 
 .producto-card:hover {
   transform: translateY(-7px);
+  background: #00385a;
 
   box-shadow:
     0 20px 45px rgba(0, 0, 0, 0.10);
+
+  transition: background .5s ease;
+}
+
+.producto-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--radius);
+}
+
+.producto-card-link:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: -3px;
 }
 
 
@@ -610,6 +626,8 @@ body {
 
 .producto-imagen {
   position: relative;
+  z-index: 2;
+  pointer-events: none;
 
   width: 100%;
   height: 245px;
@@ -621,6 +639,23 @@ body {
       #f1f1f3,
       #fafafc
     );
+}
+
+.producto-imagen-hover {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+
+  width: 100%;
+  height: 245px;
+
+  overflow: hidden;
+
+  transition: background 0.3s ease;
+}
+
+.producto-card:hover .producto-imagen-hover {
+  background: #00385a;
 }
 
 .producto-placeholder-img {
@@ -677,15 +712,12 @@ body {
    FAVORITO
 ========================================= */
 
-/* =========================================
-   FAVORITO
-========================================= */
-
 .btn-favorito {
   position: absolute;
   top: 15px;
   right: 15px;
   z-index: 5;
+  pointer-events: auto;
 
   width: 44px;
   height: 44px;
@@ -771,6 +803,9 @@ body {
   }
 }
 .producto-info {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
   padding: 22px;
 
   display: flex;
@@ -786,6 +821,12 @@ body {
   font-weight: 800;
 
   letter-spacing: 1.5px;
+
+  transition: color 0.3s ease;
+}
+
+.producto-card:hover .producto-categoria {
+  color: #c9c9c9;
 }
 
 .producto-nombre {
@@ -797,6 +838,12 @@ body {
   font-weight: 750;
 
   letter-spacing: -0.5px;
+
+  transition: color 0.3s ease;
+}
+
+.producto-card:hover .producto-nombre {
+  color: #ffffff;
 }
 
 .producto-desc {
@@ -813,6 +860,12 @@ body {
   -webkit-box-orient: vertical;
 
   overflow: hidden;
+
+  transition: color 0.3s ease;
+}
+
+.producto-card:hover .producto-desc {
+  color: #c9c9c9;
 }
 
 
@@ -843,6 +896,12 @@ body {
 
   font-size: 0.7rem;
   font-weight: 600;
+
+  transition: color 0.3s ease;
+}
+
+.producto-card:hover .precio-label {
+  color: #c9c9c9;
 }
 
 .producto-precio {
@@ -852,6 +911,12 @@ body {
 
   font-size: 1.45rem;
   font-weight: 800;
+
+  transition: color 0.3s ease;
+}
+
+.producto-card:hover .producto-precio {
+  color: #ffffff;
 }
 
 
@@ -900,8 +965,13 @@ body {
 }
 
 .btn-agregar-carrito {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+  justify-self: center;
+  margin-left: 15px;
   white-space: nowrap;
-  padding: 11px 13px;
+  padding: 11px 150px;
   border: 1px solid #cbd9de;
   border-radius: 10px;
   background: #00385a;
@@ -909,12 +979,19 @@ body {
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 700;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.producto-card:hover .btn-agregar-carrito {
+  background: #ffffff;
+  color: #00385a;
+  border-color: #ffffff;
 }
 
 .btn-agregar-carrito:hover {
   background: #d8ebf0;
   transform: translateY(-2px);
+  transform: scale(1.09);
 }
 
 
@@ -1032,6 +1109,10 @@ body {
   .btn-agregar-carrito {
     grid-column: 1;
     width: 100%;
+  }
+
+  .btn-agregar-carrito {
+    margin-left: 0;
   }
 
   .header-tienda {

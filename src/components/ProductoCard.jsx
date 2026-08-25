@@ -6,8 +6,13 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
 
   return (
     <article className="producto-card">
+      <Link
+        to={`/productos/${prod.id}`}
+        className="producto-card-link"
+        aria-label={`Ver detalles de ${prod.nombre}`}
+      />
 
-      <div className="producto-imagen">
+      <div className="producto-imagen producto-imagen-hover">
 
         <span className="producto-badge">
           {index < 2 ? 'Nuevo' : 'Popular'}
@@ -67,18 +72,11 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
             </p>
           </div>
 
-          <Link
-            to={`/productos/${prod.id}`}
-            className="btn-ver-detalle"
-          >
-            Ver producto
-            <span>→</span>
-          </Link>
-            <button
-              className="btn-agregar-carrito"
+          <button
+            className="btn-agregar-carrito"
             onClick={() => agregarAlCarrito(prod)}
-            >
-              🛒
+          >
+            🛒
         </button>
 
         </div>

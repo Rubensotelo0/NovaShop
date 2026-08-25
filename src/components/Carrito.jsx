@@ -55,12 +55,7 @@ function Carrito() {
           </div>
 
 
-          <Link
-            to="/"
-            className="carrito-volver"
-          >
-            ← Seguir comprando
-          </Link>
+        
 
         </div>
 
