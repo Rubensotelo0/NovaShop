@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "vite",
     "dev": "nodemon --watch src --ext js,mjs,cjs,json src/app.js",
     "build": "vite build",
     "lint": "eslint .",
