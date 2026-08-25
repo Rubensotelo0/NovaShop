@@ -4,7 +4,7 @@ import DetalleProducto from './components/DetalleProducto';
 import PageTransition from './components/PageTransition';
 import Favoritos from './components/Favoritos';
 import Carrito from './components/Carrito';
-import { CarritoProvider } from './context/CarritoContext';
+import { CarritoProvider } from './context/CarritoProvider';
 
 function App() {
   return (
