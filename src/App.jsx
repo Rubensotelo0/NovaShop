@@ -6,6 +6,7 @@ import Favoritos from './components/Favoritos';
 import Carrito from './components/Carrito';
 import { CarritoProvider } from './context/CarritoProvider';
 import { ProductosProvider } from './context/ProductosProvider';
+import Login from './components/Login';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/productos/:id" element={<DetalleProducto />} />
           <Route path="/favoritos" element={<Favoritos />} />
           <Route path="/carrito" element={<Carrito />}/>
+          <Route path="/login" element={<Login />} />
         </Routes>
       </PageTransition>
       </CarritoProvider>  
