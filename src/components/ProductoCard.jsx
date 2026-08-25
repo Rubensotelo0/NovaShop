@@ -78,7 +78,7 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
               className="btn-agregar-carrito"
             onClick={() => agregarAlCarrito(prod)}
             >
-              Agregar
+              🛒
         </button>
 
         </div>
