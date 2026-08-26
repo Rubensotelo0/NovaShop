@@ -134,10 +134,10 @@ function DetalleProducto() {
               {producto.marca}
             </span>
 
-            <div></div>
+            {/*<div></div>*/}
 
             <small>
-              Art: {producto.id}
+              {/*Art: {producto.id}*/}
             </small>
 
           </div>

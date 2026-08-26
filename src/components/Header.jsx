@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useCarrito } from '../context/useCarrito';
 import { useEffect, useRef, useState } from 'react';
 import '../styles/Header.css';
+import { Menu, Moon, Search, ShoppingCart, Sun, UserRound } from 'lucide-react';
 
 function Header() {
 
@@ -114,6 +115,16 @@ function Header() {
 
   }, []);
 
+  const volverAlInicio = (event) => {
+    if (window.location.pathname === '/') {
+      event.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
+
 
   return (
     <>
@@ -135,9 +146,12 @@ function Header() {
         <div className="header-menu" ref={menuRef}>
 
           <button
+            type="button"
             onClick={() => setMenuAbierto(!menuAbierto)}
+            aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
+            title={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
           >
-            ☰
+            <Menu size={22} strokeWidth={2} aria-hidden="true" />
           </button>
                 
                 {/* ==============================
@@ -184,8 +198,8 @@ function Header() {
             placeholder="Search"
           />
 
-          <button>
-            🔍
+          <button type="button" aria-label="Buscar" title="Buscar">
+            <Search size={19} strokeWidth={2} aria-hidden="true" />
           </button>
 
         </div>
@@ -197,7 +211,7 @@ function Header() {
 
         <div className="header-logo">
 
-          <Link to="/">
+          <Link to="/" onClick={volverAlInicio}>
 
             <span className="header-logo-dark">
               Nova
@@ -223,8 +237,14 @@ function Header() {
 
           <button
             onClick={() => setModoOscuro(!modoOscuro)}
+            aria-label={modoOscuro ? 'Activar modo claro' : 'Activar modo oscuro'}
+            title={modoOscuro ? 'Modo claro' : 'Modo oscuro'}
           >
-            {modoOscuro ? '☀️' : '🌙'}
+            {modoOscuro ? (
+              <Sun size={20} strokeWidth={2} aria-hidden="true" />
+            ) : (
+              <Moon size={20} strokeWidth={2} aria-hidden="true" />
+            )}
           </button>
 
 
@@ -237,10 +257,12 @@ function Header() {
             className={`header-carrito ${
               rebote ? 'rebote' : ''
             }`}
+            aria-label="Abrir carrito"
+            title="Carrito"
           >
 
             <span aria-hidden="true">
-              🛒
+              <ShoppingCart size={21} strokeWidth={2} />
             </span>
 
             {cantidadCarrito > 0 && (
@@ -260,8 +282,10 @@ function Header() {
 
             <button
               onClick={() => setUsuarioAbierto(!usuarioAbierto)}
+              aria-label="Abrir menú de usuario"
+              title="Menú de usuario"
             >
-              👤
+              <UserRound size={20} strokeWidth={2} aria-hidden="true" />
             </button>
 
 

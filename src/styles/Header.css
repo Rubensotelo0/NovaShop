@@ -78,6 +78,7 @@
 
   border: none;
   border-radius: 10px;
+  color: #00385a;
 
   background: transparent;
 
@@ -119,6 +120,7 @@
 
 .header-logo {
   position: absolute;
+  
 
   left: 50%;
 
@@ -133,6 +135,8 @@
   font-weight: 800;
 
   letter-spacing: -0.5px;
+
+  color:#00385a;
 
   transition:
     color 0.2s ease,
@@ -172,6 +176,47 @@
   gap: 10px;
 
   margin-left: auto;
+}
+
+.header-carrito {
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #0b5a00;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.header-carrito:hover {
+  background: rgba(255, 255, 255, 0.10);
+
+  transform: scale(1.05);
+}
+
+.header-carrito span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-tienda.header-scrolled .header-carrito,
+.header-tienda:not(.header-scrolled):hover .header-carrito {
+  color: white;
 }
 
 
@@ -291,8 +336,6 @@
 
   cursor: pointer;
 
-  font-size: 1rem;
-
   transition:
     background 0.2s ease,
     color 0.2s ease;
@@ -336,8 +379,6 @@
   background: transparent;
 
   color: #00385a;
-
-  font-size: 1.1rem;
 
   cursor: pointer;
 

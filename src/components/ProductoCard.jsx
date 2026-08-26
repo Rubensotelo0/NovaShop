@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useCarrito } from '../context/useCarrito';
+import { ShoppingCart } from 'lucide-react';
 
 function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
   const { agregarAlCarrito, carrito } = useCarrito();
@@ -112,6 +113,7 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
           <button
             className={`btn-agregar-carrito ${animandoCarrito ? 'agregado' : ''}`}
             onClick={() => agregarAlCarrito(prod)}
+<<<<<<< Updated upstream
             disabled={sinStock}
             aria-label={
               sinStock
@@ -121,6 +123,13 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
           >
             {sinStock ? 'Agotado' : cantidadEnCarrito > 0 ? `🛒 ${cantidadEnCarrito}` : '🛒'}
           </button>
+=======
+            aria-label={`Agregar ${prod.nombre} al carrito`}
+            title="Agregar al carrito"
+          >
+            <ShoppingCart size={19} strokeWidth={2} aria-hidden="true" />
+        </button>
+>>>>>>> Stashed changes
 
         </div>
 
