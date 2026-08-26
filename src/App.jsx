@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ListaProductos from './components/ListaProductos';
+import HomePage from './components/HomePage';
 import DetalleProducto from './components/DetalleProducto';
 import PageTransition from './components/PageTransition';
 import Favoritos from './components/Favoritos';
@@ -18,7 +18,7 @@ function App() {
         <CarritoProvider>
           <PageTransition>
             <Routes>
-              <Route path="/" element={<ListaProductos />}/>
+              <Route path="/" element={<HomePage />}/>
               <Route path="/perfil" element={<Perfil/>}/>
               <Route path="/datosEnv" element={<DatosEnvio/>}/>
               <Route path="/confirmCompra" element={<ConfirmarCompra/>}/>

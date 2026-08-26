@@ -7,7 +7,7 @@ import { useCarrito } from '../context/useCarrito';
 import Hero from './hero.jsx';
 import { useProductos } from '../context/useProductos';
 
-function ListaProductos() {
+function HomePage() {
 
   const { carrito } = useCarrito();
   const { productos, cargando, error } = useProductos();
@@ -46,7 +46,7 @@ function ListaProductos() {
           (favoritoId) => favoritoId !== id
         );
       } else {
-        // Agregar a favoritos
+        // Agregar de favoritos
         nuevosFavoritos = [...actuales, id];
       }
 
@@ -128,4 +128,4 @@ function ListaProductos() {
   );
 }
 
-export default ListaProductos;
+export default HomePage;
