@@ -1,5 +1,4 @@
 import { useCarrito } from '../context/useCarrito';
-import { useProductos } from '../context/useProductos';
 import { Link } from 'react-router-dom';
 import '../styles/Carrito.css';
 import Header from './Header';
@@ -11,21 +10,10 @@ function Carrito() {
     cambiarCantidad,
     quitarDelCarrito,
     vaciarCarrito,
-    total
+    total,
+    cargando,
+    error
   } = useCarrito();
-  const { productos } = useProductos();
-
-
-  // Buscar la información completa de cada producto
-  // que actualmente está en el carrito.
-  const productosCarrito = carrito
-    .map((item) => ({
-      ...item,
-      producto: productos.find(
-        (prod) => String(prod.id) === String(item.id)
-      )
-    }))
-    .filter((item) => item.producto);
 
 
   return (
@@ -83,7 +71,33 @@ function Carrito() {
             CARRITO VACÍO
         ============================== */}
 
-        {productosCarrito.length === 0 ? (
+        {cargando ? (
+
+          <section className="carrito-vacio">
+
+            <h2>
+              Cargando carrito...
+            </h2>
+
+          </section>
+
+
+        ) : error ? (
+
+          <section className="carrito-vacio">
+
+            <h2>
+              No se pudo cargar el carrito
+            </h2>
+
+            <p>
+              {error}
+            </p>
+
+          </section>
+
+
+        ) : carrito.length === 0 ? (
 
           <section className="carrito-vacio">
 
@@ -125,7 +139,7 @@ function Carrito() {
             {/* LISTA DE PRODUCTOS */}
             <div className="carrito-lista">
 
-              {productosCarrito.map(
+              {carrito.map(
                 ({ id, cantidad, producto }) => (
 
                   <article
@@ -150,11 +164,19 @@ function Carrito() {
                       </h2>
 
                       <p>
+                        Marca: {producto.marca}
+                      </p>
+
+                      <p>
                         {producto.desc}
                       </p>
 
                       <p className="carrito-item-precio">
                         ${producto.precio.toFixed(2)} por unidad
+                      </p>
+
+                      <p>
+                        Stock disponible: {producto.stock}
                       </p>
 
                     </div>
@@ -187,6 +209,7 @@ function Carrito() {
                         <button
                           type="button"
                           aria-label={`Aumentar cantidad de ${producto.nombre}`}
+                          disabled={cantidad >= producto.stock}
                           onClick={() =>
                             cambiarCantidad(
                               id,

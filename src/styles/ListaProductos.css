@@ -607,6 +607,10 @@ body {
   transition: background .5s ease;
 }
 
+.producto-card-agregado {
+  animation: producto-agregado-pulse 0.9s ease;
+}
+
 .producto-card-link {
   position: absolute;
   inset: 0;
@@ -706,6 +710,70 @@ body {
   text-transform: uppercase;
 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.producto-carrito-resumen {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 56, 90, 0.12);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  opacity: 0.88;
+  transform: translateY(0) scale(1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.producto-carrito-resumen.activo {
+  opacity: 1;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 22px rgba(0, 56, 90, 0.14);
+}
+
+.producto-carrito-resumen strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #00385a;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.producto-carrito-resumen span {
+  color: #00385a;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.producto-agregado-burst {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 5;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(0, 56, 90, 0.96);
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 900;
+  box-shadow: 0 14px 28px rgba(0, 56, 90, 0.2);
+  animation: agregado-burst 0.9s ease forwards;
+  pointer-events: none;
 }
 
 /* =========================================
@@ -982,6 +1050,10 @@ body {
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
+.btn-agregar-carrito.agregado {
+  animation: boton-carrito-confirmado 0.65s ease;
+}
+
 .producto-card:hover .btn-agregar-carrito {
   background: #ffffff;
   color: #00385a;
@@ -992,6 +1064,54 @@ body {
   background: #d8ebf0;
   transform: translateY(-2px);
   transform: scale(1.09);
+}
+
+.btn-agregar-carrito:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+@keyframes producto-agregado-pulse {
+  0% {
+    transform: translateY(-7px) scale(1);
+  }
+  30% {
+    transform: translateY(-10px) scale(1.015);
+    box-shadow: 0 24px 48px rgba(0, 56, 90, 0.18);
+  }
+  100% {
+    transform: translateY(-7px) scale(1);
+  }
+}
+
+@keyframes boton-carrito-confirmado {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.09);
+    background: #d8ebf0;
+    border-color: #d8ebf0;
+    color: #00385a;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes agregado-burst {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.7);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-28px) scale(1);
+  }
 }
 
 

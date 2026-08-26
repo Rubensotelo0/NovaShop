@@ -4,15 +4,15 @@ import { pool } from './database.js';
 const databaseName = process.env.DB_NAME;
 
 const productosIniciales = [
-  { id: 1, nombre: 'Laptop Gamer', descripcion: 'Laptop potente para juegos.', precio: 1200.00, descuento: 15, imagen: '/src/assets/Laptop.jpg', stock: 10 },
-  { id: 2, nombre: 'Teclado Mecánico', descripcion: 'Teclado con luces RGB.', precio: 80.50, descuento: 10, imagen: '/src/assets/Teclado.jpg', stock: 10 },
-  { id: 3, nombre: 'Ratón Inalámbrico', descripcion: 'Ratón óptico de alta precisión.', precio: 50.00, descuento: 0, imagen: 'https://tse1.mm.bing.net/th/id/OIP.rYxbOR_gpdZxfkeU8tcDQQHaGZ?r=0&rs=1&pid=ImgDetMain&o=7&rm=3', stock: 10 },
-  { id: 4, nombre: 'Monitor 4K', descripcion: 'Monitor de alta resolución para diseño gráfico.', precio: 400.00, descuento: 5, imagen: '/src/assets/Monitor.jpg', stock: 10 },
-  { id: 5, nombre: 'Auriculares Gaming', descripcion: 'Auriculares con sonido envolvente.', precio: 120.00, descuento: 20, imagen: 'https://m.media-amazon.com/images/I/71noSdO0XjL._AC_SX679_.jpg', stock: 10 },
-  { id: 6, nombre: 'Silla Ergonómica', descripcion: 'Silla cómoda para largas sesiones de trabajo.', precio: 250.00, descuento: 10, imagen: 'https://m.media-amazon.com/images/I/51r-4V9wa+L._AC_SX522_.jpg', stock: 10 },
-  { id: 7, nombre: 'Disco Duro Externo', descripcion: 'Almacenamiento portátil de gran capacidad.', precio: 100.00, descuento: 0, imagen: 'https://tse3.mm.bing.net/th/id/OIP.UfRg6TExQYx7fSmnvSG6ZwHaE_?r=0&rs=1&pid=ImgDetMain&o=7&rm=3', stock: 10 },
-  { id: 8, nombre: 'Cámara Web HD', descripcion: 'Cámara para videollamadas y streaming.', precio: 70.00, descuento: 5, imagen: 'https://m.media-amazon.com/images/I/71eGb1FcyiL._AC_SY300_SX300_QL70_ML2_.jpg', stock: 10 },
-  { id: 9, nombre: 'Micrófono USB', descripcion: 'Micrófono de alta calidad para grabación.', precio: 90.00, descuento: 0, imagen: 'https://m.media-amazon.com/images/I/71LlwYACaWL._AC_SY300_SX300_QL70_ML2_.jpg', stock: 10 }
+  { id: 1, nombre: 'Laptop Gamer', marca: 'MSI', descripcion: 'Laptop potente para juegos.', precio: 1200.00, descuento: 15, imagen: '/src/assets/Laptop.jpg', stock: 10 },
+  { id: 2, nombre: 'Teclado Mecánico', marca: 'Redragon', descripcion: 'Teclado con luces RGB.', precio: 80.50, descuento: 10, imagen: '/src/assets/Teclado.jpg', stock: 10 },
+  { id: 3, nombre: 'Ratón Inalámbrico', marca: 'Logitech', descripcion: 'Ratón óptico de alta precisión.', precio: 50.00, descuento: 0, imagen: 'https://tse1.mm.bing.net/th/id/OIP.rYxbOR_gpdZxfkeU8tcDQQHaGZ?r=0&rs=1&pid=ImgDetMain&o=7&rm=3', stock: 10 },
+  { id: 4, nombre: 'Monitor 4K', marca: 'LG', descripcion: 'Monitor de alta resolución para diseño gráfico.', precio: 400.00, descuento: 5, imagen: '/src/assets/Monitor.jpg', stock: 10 },
+  { id: 5, nombre: 'Auriculares Gaming', marca: 'HyperX', descripcion: 'Auriculares con sonido envolvente.', precio: 120.00, descuento: 20, imagen: 'https://m.media-amazon.com/images/I/71noSdO0XjL._AC_SX679_.jpg', stock: 10 },
+  { id: 6, nombre: 'Silla Ergonómica', marca: 'Corsair', descripcion: 'Silla cómoda para largas sesiones de trabajo.', precio: 250.00, descuento: 10, imagen: 'https://m.media-amazon.com/images/I/51r-4V9wa+L._AC_SX522_.jpg', stock: 10 },
+  { id: 7, nombre: 'Disco Duro Externo', marca: 'Seagate', descripcion: 'Almacenamiento portátil de gran capacidad.', precio: 100.00, descuento: 0, imagen: 'https://tse3.mm.bing.net/th/id/OIP.UfRg6TExQYx7fSmnvSG6ZwHaE_?r=0&rs=1&pid=ImgDetMain&o=7&rm=3', stock: 10 },
+  { id: 8, nombre: 'Cámara Web HD', marca: 'Logitech', descripcion: 'Cámara para videollamadas y streaming.', precio: 70.00, descuento: 5, imagen: 'https://m.media-amazon.com/images/I/71eGb1FcyiL._AC_SY300_SX300_QL70_ML2_.jpg', stock: 10 },
+  { id: 9, nombre: 'Micrófono USB', marca: 'Blue', descripcion: 'Micrófono de alta calidad para grabación.', precio: 90.00, descuento: 0, imagen: 'https://m.media-amazon.com/images/I/71LlwYACaWL._AC_SY300_SX300_QL70_ML2_.jpg', stock: 10 }
 ];
 
 async function createDatabase() {
@@ -42,12 +42,31 @@ async function createTables() {
     `CREATE TABLE IF NOT EXISTS productos (
       id INT AUTO_INCREMENT PRIMARY KEY,
       nombre VARCHAR(150) NOT NULL,
+      marca VARCHAR(100) NOT NULL DEFAULT 'NovaTech',
       descripcion TEXT,
       precio DECIMAL(10, 2) NOT NULL,
       descuento DECIMAL(5, 2) NOT NULL DEFAULT 0,
       imagen VARCHAR(500),
       stock INT NOT NULL DEFAULT 0,
       creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS carritos (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      estado ENUM('activo', 'convertido', 'abandonado') NOT NULL DEFAULT 'activo',
+      creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS detalle_carritos (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      carrito_id INT NOT NULL,
+      producto_id INT NOT NULL,
+      cantidad INT NOT NULL,
+      precio_unitario DECIMAL(10, 2) NOT NULL,
+      creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      UNIQUE KEY carrito_producto_unico (carrito_id, producto_id),
+      FOREIGN KEY (carrito_id) REFERENCES carritos(id) ON DELETE CASCADE,
+      FOREIGN KEY (producto_id) REFERENCES productos(id)
     )`,
     `CREATE TABLE IF NOT EXISTS pedidos (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -85,6 +104,17 @@ async function createTables() {
     }
   }
 
+  try {
+    await pool.query(`
+      ALTER TABLE productos
+      ADD COLUMN marca VARCHAR(100) NOT NULL DEFAULT 'NovaTech'
+    `);
+  } catch (error) {
+    if (error.code !== 'ER_DUP_FIELDNAME') {
+      throw error;
+    }
+  }
+
   await sincronizarProductos();
 }
 
@@ -98,10 +128,11 @@ async function sincronizarProductos() {
     for (const producto of productosIniciales) {
       await conexion.query(`
         INSERT INTO productos
-          (id, nombre, descripcion, precio, descuento, imagen, stock)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+          (id, nombre, marca, descripcion, precio, descuento, imagen, stock)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
           nombre = VALUES(nombre),
+          marca = VALUES(marca),
           descripcion = VALUES(descripcion),
           precio = VALUES(precio),
           descuento = VALUES(descuento),
@@ -110,6 +141,7 @@ async function sincronizarProductos() {
       `, [
         producto.id,
         producto.nombre,
+        producto.marca,
         producto.descripcion,
         producto.precio,
         producto.descuento,

@@ -1,11 +1,35 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 import { useCarrito } from '../context/useCarrito';
 
 function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
-  const { agregarAlCarrito } = useCarrito();
+  const { agregarAlCarrito, carrito } = useCarrito();
+  const itemEnCarrito = carrito.find((item) => String(item.id) === String(prod.id));
+  const cantidadEnCarrito = itemEnCarrito?.cantidad || 0;
+  const sinStock = cantidadEnCarrito >= prod.stock;
+  const [animandoCarrito, setAnimandoCarrito] = useState(false);
+  const [ultimoAgregado, setUltimoAgregado] = useState(0);
+  const cantidadAnterior = useRef(cantidadEnCarrito);
+
+  useEffect(() => {
+    if (cantidadEnCarrito > cantidadAnterior.current) {
+      setAnimandoCarrito(true);
+      setUltimoAgregado(cantidadEnCarrito - cantidadAnterior.current);
+
+      const timer = setTimeout(() => {
+        setAnimandoCarrito(false);
+        setUltimoAgregado(0);
+      }, 900);
+
+      cantidadAnterior.current = cantidadEnCarrito;
+      return () => clearTimeout(timer);
+    }
+
+    cantidadAnterior.current = cantidadEnCarrito;
+  }, [cantidadEnCarrito]);
 
   return (
-    <article className="producto-card">
+    <article className={`producto-card ${animandoCarrito ? 'producto-card-agregado' : ''}`}>
       <Link
         to={`/productos/${prod.id}`}
         className="producto-card-link"
@@ -44,6 +68,19 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
         </svg>
         </button>
 
+        {cantidadEnCarrito > 0 && (
+          <div className={`producto-carrito-resumen ${animandoCarrito ? 'activo' : ''}`}>
+            <strong>{cantidadEnCarrito}</strong>
+            <span>agregados</span>
+          </div>
+        )}
+
+        {ultimoAgregado > 0 && (
+          <div className="producto-agregado-burst">
+            +{ultimoAgregado}
+          </div>
+        )}
+
       </div>
 
       <div className="producto-info">
@@ -73,11 +110,17 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
           </div>
 
           <button
-            className="btn-agregar-carrito"
+            className={`btn-agregar-carrito ${animandoCarrito ? 'agregado' : ''}`}
             onClick={() => agregarAlCarrito(prod)}
+            disabled={sinStock}
+            aria-label={
+              sinStock
+                ? `${prod.nombre} sin existencias disponibles`
+                : `Agregar ${prod.nombre} al carrito`
+            }
           >
-            🛒
-        </button>
+            {sinStock ? 'Agotado' : cantidadEnCarrito > 0 ? `🛒 ${cantidadEnCarrito}` : '🛒'}
+          </button>
 
         </div>
 

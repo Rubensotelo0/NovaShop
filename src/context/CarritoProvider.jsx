@@ -1,70 +1,147 @@
 import { useEffect, useState } from 'react';
 import CarritoContext from './CarritoContext';
 
+const API_URL = 'http://localhost:3000/api/carrito';
+
+function normalizarCarrito(data) {
+  return {
+    carrito: Array.isArray(data?.items) ? data.items : [],
+    total: Number(data?.total || 0),
+    totalArticulos: Number(data?.totalArticulos || 0)
+  };
+}
+
 export function CarritoProvider({ children }) {
+  const [carrito, setCarrito] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [totalArticulos, setTotalArticulos] = useState(0);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
 
-  //Crea un estado llamado carrito, si hay un carrito guardado, úsalo. Si no, comienza con un array vacío.
-  const [carrito, setCarrito] = useState(() => {
-    const guardado = localStorage.getItem('carrito');
-    return guardado ? JSON.parse(guardado) : [];
-  });
+  const getErrorMessage = async (response, defaultMessage) => {
+    try {
+      const data = await response.json();
+      return data?.message || defaultMessage;
+    } catch {
+      return defaultMessage;
+    }
+  };
 
-  //estado de cuando cambia carrito
+  const aplicarCarrito = (data) => {
+    const carritoNormalizado = normalizarCarrito(data);
+    setCarrito(carritoNormalizado.carrito);
+    setTotal(carritoNormalizado.total);
+    setTotalArticulos(carritoNormalizado.totalArticulos);
+    setError('');
+  };
+
+  const cargarCarrito = async () => {
+    try {
+      const response = await fetch(API_URL);
+
+      if (!response.ok) {
+        throw new Error('No se pudo cargar el carrito');
+      }
+
+      const data = await response.json();
+      aplicarCarrito(data);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setCargando(false);
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-  }, [carrito]);
+    cargarCarrito();
+  }, []);
 
+  const agregarAlCarrito = async (producto, cantidad = 1) => {
+    try {
+      const response = await fetch(`${API_URL}/items`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          productoId: Number(producto.id),
+          cantidad
+        })
+      });
 
-  const agregarAlCarrito = (producto,cantidad = 1) => {
-    setCarrito((carritoActual) => {
-      const existe = carritoActual.find(
-        (item) => item.id === producto.id
-      );
-
-      if (existe) {
-        return carritoActual.map((item) =>
-          item.id === producto.id
-            ? { ...item, cantidad: item.cantidad + cantidad }
-            : item
+      if (!response.ok) {
+        throw new Error(
+          await getErrorMessage(response, 'No se pudo agregar el producto al carrito')
         );
       }
 
-      return [
-        ...carritoActual,
-        {
-          ...producto,
-          id: producto.id,
-          cantidad: cantidad
-        }
-      ];
-    });
+      aplicarCarrito(await response.json());
+    } catch (requestError) {
+      setError(requestError.message);
+      throw requestError;
+    }
   };
 
-  const cambiarCantidad = (id, cantidad) => {
-    setCarrito((carritoActual) => {
-      if (cantidad <= 0) {
-        return carritoActual.filter((item) => item.id !== id);
+  const cambiarCantidad = async (id, cantidad) => {
+    try {
+      const response = await fetch(`${API_URL}/items/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cantidad })
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          await getErrorMessage(response, 'No se pudo actualizar la cantidad')
+        );
       }
 
-      return carritoActual.map((item) =>
-        item.id === id ? { ...item, cantidad } : item
-      );
-    });
+      aplicarCarrito(await response.json());
+    } catch (requestError) {
+      setError(requestError.message);
+      throw requestError;
+    }
   };
 
-  //recibe id y elimina del array el producto que tenga ese ID
-  const quitarDelCarrito = (id) => {
-    setCarrito((carritoActual) =>
-      carritoActual.filter((item) => item.id !== id)
-    );
+  const quitarDelCarrito = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/items/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          await getErrorMessage(response, 'No se pudo quitar el producto del carrito')
+        );
+      }
+
+      aplicarCarrito(await response.json());
+    } catch (requestError) {
+      setError(requestError.message);
+      throw requestError;
+    }
   };
 
-  const vaciarCarrito = () => setCarrito([]);
+  const vaciarCarrito = async () => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'DELETE'
+      });
 
-  const total = carrito.reduce(
-    (acumulado, item) => acumulado + item.precio * item.cantidad,
-    0
-  );
+      if (!response.ok) {
+        throw new Error(
+          await getErrorMessage(response, 'No se pudo vaciar el carrito')
+        );
+      }
+
+      aplicarCarrito(await response.json());
+    } catch (requestError) {
+      setError(requestError.message);
+      throw requestError;
+    }
+  };
 
   return (
     <CarritoContext.Provider
@@ -74,7 +151,11 @@ export function CarritoProvider({ children }) {
         cambiarCantidad,
         quitarDelCarrito,
         vaciarCarrito,
-        total
+        total,
+        totalArticulos,
+        cargando,
+        error,
+        recargarCarrito: cargarCarrito
       }}
     >
       {children}

@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/DetalleProducto.css';
 import Header from './Header';
 import { useCarrito } from '../context/useCarrito';
@@ -14,7 +14,7 @@ function DetalleProducto() {
   const productoAnterior= productos[indiceActual-1];
   const productoSiguiente = productos[indiceActual+1];
   const [cantidad, setCantidad] = useState(1);
-  const {agregarAlCarrito} = useCarrito();
+  const {agregarAlCarrito, carrito, error: errorCarrito} = useCarrito();
 
 
   if (cargando) {
@@ -32,8 +32,25 @@ function DetalleProducto() {
     );
   }
 
+  const itemEnCarrito = carrito.find((item) => String(item.id) === String(producto.id));
+  const cantidadEnCarrito = itemEnCarrito?.cantidad || 0;
+  const stockDisponible = Math.max(producto.stock - cantidadEnCarrito, 0);
+
+  useEffect(() => {
+    if (stockDisponible === 0) {
+      setCantidad(1);
+      return;
+    }
+
+    if (cantidad > stockDisponible) {
+      setCantidad(stockDisponible);
+    }
+  }, [cantidad, stockDisponible]);
+
   const aumentarCantidad = () => {
-    setCantidad(cantidad + 1);
+    if (cantidad < stockDisponible) {
+      setCantidad(cantidad + 1);
+    }
   };
 
   const disminuirCantidad = () => {
@@ -114,7 +131,7 @@ function DetalleProducto() {
           <div className="brand">
 
             <span>
-              UGREEN
+              {producto.marca}
             </span>
 
             <div></div>
@@ -158,7 +175,9 @@ function DetalleProducto() {
           {/* STOCK */}
 
           <div className="stock">
-            En existencia, listo para enviar
+            {producto.stock > 0
+              ? `${producto.stock} disponibles${cantidadEnCarrito > 0 ? ` · ${cantidadEnCarrito} en tu carrito` : ''}`
+              : 'Sin existencias'}
           </div>
 
 
@@ -171,15 +190,25 @@ function DetalleProducto() {
 
           {/* CARRITO */}
 
-          <button className="add-cart" onClick={()=> agregarAlCarrito(producto,cantidad)}>
+          <button
+            className="add-cart"
+            onClick={() => agregarAlCarrito(producto, cantidad)}
+            disabled={stockDisponible === 0}
+          >
 
             <span className="cart-small">
               🛒
             </span>
 
-            Añadir al carrito
+            {stockDisponible > 0 ? 'Añadir al carrito' : 'Agotado'}
 
           </button>
+
+          {errorCarrito && (
+            <p className="stock">
+              {errorCarrito}
+            </p>
+          )}
 
 
           {/* VOLVER */}
