@@ -153,6 +153,10 @@ function Header() {
             <Link to="/">
               Inicio
             </Link>
+            
+            <Link to="/perfil">
+              Mi perfil
+            </Link>
 
             <Link to="/favoritos">
               Favoritos
@@ -161,6 +165,7 @@ function Header() {
             <Link to="/">
               Contactanos
             </Link>
+
 
             </nav>
           </div>

@@ -1,0 +1,582 @@
+/* =========================================
+   PÁGINA CONFIRMAR COMPRA
+========================================= */
+
+.confirmar-compra-page {
+
+  --navy: #00385a;
+
+  min-height: 100vh;
+
+  padding: 0 0 72px;
+
+  background:
+    radial-gradient(
+      circle at 8% 12%,
+      rgba(99, 102, 241, 0.08),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 92% 86%,
+      rgba(0, 56, 90, 0.08),
+      transparent 32%
+    ),
+    var(--background);
+}
+
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+========================================= */
+
+.confirmar-compra-shell {
+
+  width: min(900px, calc(100% - 48px));
+
+  margin: 40px auto 0;
+}
+
+
+/* =========================================
+   CONTENIDO DE CONFIRMACIÓN
+========================================= */
+
+.confirmar-compra-contenido {
+
+  padding: 30px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  box-shadow:
+    0 20px 48px rgba(0, 56, 90, 0.08);
+}
+
+
+/* =========================================
+   ENCABEZADO
+========================================= */
+
+.confirmar-compra-header {
+
+  margin-bottom: 28px;
+
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+.confirmar-compra-header h1 {
+
+  margin: 0 0 8px;
+
+  color: #01162b;
+
+  font-size: 1.6rem;
+
+  font-weight: 800;
+
+  letter-spacing: -0.4px;
+}
+
+
+.confirmar-compra-header p {
+
+  margin: 0;
+
+  color: var(--text-light);
+
+  font-size: 0.9rem;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   RESUMEN
+========================================= */
+
+.confirmar-compra-resumen {
+
+  display: grid;
+
+  gap: 12px;
+
+  margin-bottom: 28px;
+}
+
+
+.confirmar-compra-resumen-item {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 16px 18px;
+
+  background: var(--background);
+
+  border: 1px solid var(--border);
+
+  border-radius: 10px;
+}
+
+
+.confirmar-compra-resumen-item span {
+
+  color: var(--text-light);
+
+  font-size: 0.85rem;
+
+  font-weight: 600;
+}
+
+
+.confirmar-compra-resumen-item strong {
+
+  color: var(--navy);
+
+  font-size: 0.9rem;
+
+  font-weight: 800;
+
+  text-align: right;
+}
+
+
+/* =========================================
+   ACCIONES
+========================================= */
+
+.confirmar-compra-acciones {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding-top: 24px;
+
+  border-top: 1px solid var(--border);
+}
+
+
+/* =========================================
+   BOTÓN VOLVER
+========================================= */
+
+.confirmar-compra-volver {
+
+  padding: 12px 18px;
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: var(--text-light);
+
+  font-size: 0.9rem;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.confirmar-compra-volver:hover {
+
+  background: var(--background);
+
+  color: var(--navy);
+}
+
+
+/* =========================================
+   BOTÓN CONFIRMAR
+========================================= */
+
+.confirmar-compra-boton {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 180px;
+
+  padding: 13px 20px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  background: var(--primary);
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 0.9rem;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.confirmar-compra-boton:hover {
+
+  background: var(--primary-dark);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 24px rgba(99, 102, 241, 0.28);
+}
+
+
+/* =========================================
+   OVERLAY DEL POPUP
+========================================= */
+
+.compra-confirmada-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(1, 22, 43, 0.55);
+
+  backdrop-filter: blur(4px);
+
+  animation: aparecerOverlay 0.2s ease;
+}
+
+
+/* =========================================
+   MODAL
+========================================= */
+
+.compra-confirmada-modal {
+
+  width: min(420px, 100%);
+
+  padding: 36px 30px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  box-shadow:
+    0 24px 60px rgba(0, 56, 90, 0.25);
+
+  text-align: center;
+
+  animation: aparecerModal 0.25s ease;
+}
+
+
+/* =========================================
+   ICONO
+========================================= */
+
+.compra-confirmada-icon {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 68px;
+
+  height: 68px;
+
+  margin: 0 auto 20px;
+
+  border-radius: 50%;
+
+  background: #eaf4f7;
+
+  color: var(--navy);
+
+  font-size: 2rem;
+
+  font-weight: 800;
+}
+
+
+/* =========================================
+   TÍTULO DEL POPUP
+========================================= */
+
+.compra-confirmada-modal h2 {
+
+  margin: 0 0 10px;
+
+  color: #01162b;
+
+  font-size: 1.5rem;
+
+  font-weight: 800;
+
+  letter-spacing: -0.3px;
+}
+
+
+/* =========================================
+   TEXTO DEL POPUP
+========================================= */
+
+.compra-confirmada-modal p {
+
+  margin: 0 0 8px;
+
+  color: var(--text-light);
+
+  font-size: 0.9rem;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   BOTÓN VOLVER A LA TIENDA
+========================================= */
+
+.compra-confirmada-boton {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-top: 20px;
+
+  padding: 13px 22px;
+
+  border-radius: 10px;
+
+  background: var(--navy);
+
+  color: #ffffff;
+
+  font-size: 0.9rem;
+
+  font-weight: 800;
+
+  text-decoration: none;
+
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.compra-confirmada-boton:hover {
+
+  background: #012c47;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 24px rgba(0, 56, 90, 0.22);
+}
+
+
+/* =========================================
+   ANIMACIÓN OVERLAY
+========================================= */
+
+@keyframes aparecerOverlay {
+
+  from {
+
+    opacity: 0;
+
+  }
+
+  to {
+
+    opacity: 1;
+
+  }
+
+}
+
+
+/* =========================================
+   ANIMACIÓN MODAL
+========================================= */
+
+@keyframes aparecerModal {
+
+  from {
+
+    opacity: 0;
+
+    transform: translateY(12px) scale(0.97);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: translateY(0) scale(1);
+
+  }
+
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 640px) {
+
+  .confirmar-compra-page {
+
+    padding-bottom: 54px;
+
+  }
+
+
+  .confirmar-compra-shell {
+
+    width: calc(100% - 32px);
+
+    margin-top: 30px;
+
+  }
+
+
+  .confirmar-compra-contenido {
+
+    padding: 22px;
+
+  }
+
+
+  .confirmar-compra-header h1 {
+
+    font-size: 1.4rem;
+
+  }
+
+
+  .confirmar-compra-resumen-item {
+
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+  }
+
+
+  .confirmar-compra-resumen-item strong {
+
+    text-align: left;
+
+  }
+
+
+  .confirmar-compra-acciones {
+
+    flex-direction: column-reverse;
+
+    align-items: stretch;
+
+  }
+
+
+  .confirmar-compra-boton {
+
+    width: 100%;
+
+  }
+
+
+  .confirmar-compra-volver {
+
+    text-align: center;
+
+  }
+
+
+  .compra-confirmada-modal {
+
+    padding: 30px 22px;
+
+  }
+
+}
+
+
+/* =========================================
+   RESPONSIVE PEQUEÑO
+========================================= */
+
+@media (max-width: 400px) {
+
+  .confirmar-compra-shell {
+
+    width: calc(100% - 24px);
+
+  }
+
+
+  .confirmar-compra-contenido {
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+  }
+
+
+  .compra-confirmada-overlay {
+
+    padding: 16px;
+
+  }
+
+}

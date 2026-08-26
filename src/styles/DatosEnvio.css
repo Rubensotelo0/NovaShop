@@ -1,0 +1,501 @@
+/* =========================================
+   PÁGINA DATOS DE ENVÍO
+========================================= */
+
+.datos-envio-page {
+
+  --navy: #00385a;
+
+  min-height: 100vh;
+
+  padding: 0 0 72px;
+
+  background:
+    radial-gradient(
+      circle at 8% 12%,
+      rgba(99, 102, 241, 0.08),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 92% 86%,
+      rgba(0, 56, 90, 0.08),
+      transparent 32%
+    ),
+    var(--background);
+}
+
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+========================================= */
+
+.datos-envio-shell {
+
+  width: min(900px, calc(100% - 48px));
+
+  margin: 40px auto 0;
+}
+
+
+/* =========================================
+   CONTENIDO
+========================================= */
+
+.datos-envio-contenido {
+
+  padding: 30px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  box-shadow:
+    0 20px 48px rgba(0, 56, 90, 0.08);
+}
+
+
+/* =========================================
+   ENCABEZADO
+========================================= */
+
+.datos-envio-header {
+
+  margin-bottom: 30px;
+
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+.datos-envio-header h1 {
+
+  margin: 0 0 8px;
+
+  color: #01162b;
+
+  font-size: 1.6rem;
+
+  font-weight: 800;
+
+  letter-spacing: -0.4px;
+}
+
+
+.datos-envio-header p {
+
+  margin: 0;
+
+  color: var(--text-light);
+
+  font-size: 0.9rem;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   FORMULARIO
+========================================= */
+
+.datos-envio-form {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+
+/* =========================================
+   GRUPO DEL FORMULARIO
+========================================= */
+
+.form-group {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+
+.form-group label {
+
+  color: var(--dark);
+
+  font-size: 0.85rem;
+
+  font-weight: 700;
+}
+
+
+/* =========================================
+   INPUTS
+========================================= */
+
+.form-group input {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 12px 14px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 10px;
+
+  background: var(--background);
+
+  color: var(--dark);
+
+  font-family: inherit;
+
+  font-size: 0.9rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.form-group input::placeholder {
+
+  color: #9ca3af;
+}
+
+
+.form-group input:focus {
+
+  border-color: var(--primary);
+
+  background: var(--card);
+
+  box-shadow:
+    0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+
+/* =========================================
+   MÉTODO DE PAGO
+========================================= */
+
+.datos-envio-pago {
+
+  grid-column: 1 / -1;
+
+  display: grid;
+
+  gap: 12px;
+
+  margin-top: 8px;
+
+  padding-top: 24px;
+
+  border-top: 1px solid var(--border);
+}
+
+
+.datos-envio-pago h2 {
+
+  margin: 0 0 5px;
+
+  color: var(--dark);
+
+  font-size: 1.1rem;
+
+  font-weight: 800;
+}
+
+
+/* =========================================
+   OPCIONES DE PAGO
+========================================= */
+
+.metodo-pago-option {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px 16px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 10px;
+
+  background: var(--background);
+
+  color: var(--dark);
+
+  font-size: 0.9rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.metodo-pago-option:hover {
+
+  background: #eaf4f7;
+
+  border-color: #b9d5df;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================
+   RADIO BUTTON
+========================================= */
+
+.metodo-pago-option input {
+
+  width: 17px;
+
+  height: 17px;
+
+  margin: 0;
+
+  accent-color: var(--navy);
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   BOTONES / ACCIONES
+========================================= */
+
+.datos-envio-acciones {
+
+  grid-column: 1 / -1;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  margin-top: 10px;
+
+  padding-top: 24px;
+
+  border-top: 1px solid var(--border);
+}
+
+
+/* =========================================
+   VOLVER AL CARRITO
+========================================= */
+
+.datos-envio-volver {
+
+  padding: 12px 18px;
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: var(--text-light);
+
+  font-size: 0.9rem;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+
+.datos-envio-volver:hover {
+
+  background: var(--background);
+
+  color: var(--navy);
+}
+
+
+/* =========================================
+   CONTINUAR
+========================================= */
+
+.datos-envio-continuar {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 150px;
+
+  padding: 13px 20px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  background: var(--primary);
+
+  color: #ffffff;
+
+  font-family: inherit;
+
+  font-size: 0.9rem;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.datos-envio-continuar:hover {
+
+  background: var(--primary-dark);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 24px rgba(99, 102, 241, 0.28);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+  .datos-envio-shell {
+
+    width: calc(100% - 32px);
+
+    margin-top: 30px;
+  }
+
+
+  .datos-envio-contenido {
+
+    padding: 22px;
+
+  }
+
+
+  .datos-envio-form {
+
+    grid-template-columns: 1fr;
+
+  }
+
+
+  .datos-envio-pago {
+
+    grid-column: auto;
+
+  }
+
+
+  .datos-envio-acciones {
+
+    grid-column: auto;
+
+    flex-direction: column-reverse;
+
+    align-items: stretch;
+
+  }
+
+
+  .datos-envio-continuar {
+
+    width: 100%;
+
+  }
+
+
+  .datos-envio-volver {
+
+    text-align: center;
+
+  }
+
+}
+
+
+/* =========================================
+   RESPONSIVE PEQUEÑO
+========================================= */
+
+@media (max-width: 480px) {
+
+  .datos-envio-page {
+
+    padding-bottom: 54px;
+
+  }
+
+
+  .datos-envio-shell {
+
+    width: calc(100% - 24px);
+
+  }
+
+
+  .datos-envio-contenido {
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+  }
+
+
+  .datos-envio-header h1 {
+
+    font-size: 1.4rem;
+
+  }
+
+
+  .datos-envio-header p {
+
+    font-size: 0.85rem;
+
+  }
+
+
+  .form-group input {
+
+    padding: 11px 12px;
+
+  }
+
+}

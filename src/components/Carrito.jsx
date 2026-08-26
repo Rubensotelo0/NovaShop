@@ -240,7 +240,7 @@ function Carrito() {
               </div>
 
               <Link
-                to="/checkout"
+                to="/datosEnv"
                 className="carrito-checkout"
               >
                 Finalizar compra
