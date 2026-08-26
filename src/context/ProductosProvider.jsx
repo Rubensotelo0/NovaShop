@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import ProductosContext from './ProductosContext';
+import { getProductos } from '../services/productosService';
 
 export function ProductosProvider({ children }) {
   const [productos, setProductos] = useState([]);
@@ -11,13 +12,7 @@ export function ProductosProvider({ children }) {
 
     const cargarProductos = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/productos');
-
-        if (!response.ok) {
-          throw new Error('No se pudieron cargar los productos');
-        }
-
-        const productosActualizados = await response.json();
+        const productosActualizados = await getProductos();
 
         if (activo) {
           setProductos(productosActualizados);

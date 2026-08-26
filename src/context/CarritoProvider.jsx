@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import CarritoContext from './CarritoContext';
-
-const API_URL = 'http://localhost:3000/api/carrito';
+import {
+  addItemToCarrito,
+  clearCarrito,
+  getCarrito,
+  removeItemFromCarrito,
+  updateCantidadCarrito
+} from '../services/carritoService';
 
 function normalizarCarrito(data) {
   return {
@@ -18,15 +23,6 @@ export function CarritoProvider({ children }) {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
 
-  const getErrorMessage = async (response, defaultMessage) => {
-    try {
-      const data = await response.json();
-      return data?.message || defaultMessage;
-    } catch {
-      return defaultMessage;
-    }
-  };
-
   const aplicarCarrito = (data) => {
     const carritoNormalizado = normalizarCarrito(data);
     setCarrito(carritoNormalizado.carrito);
@@ -37,14 +33,7 @@ export function CarritoProvider({ children }) {
 
   const cargarCarrito = async () => {
     try {
-      const response = await fetch(API_URL);
-
-      if (!response.ok) {
-        throw new Error('No se pudo cargar el carrito');
-      }
-
-      const data = await response.json();
-      aplicarCarrito(data);
+      aplicarCarrito(await getCarrito());
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -58,24 +47,7 @@ export function CarritoProvider({ children }) {
 
   const agregarAlCarrito = async (producto, cantidad = 1) => {
     try {
-      const response = await fetch(`${API_URL}/items`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          productoId: Number(producto.id),
-          cantidad
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          await getErrorMessage(response, 'No se pudo agregar el producto al carrito')
-        );
-      }
-
-      aplicarCarrito(await response.json());
+      aplicarCarrito(await addItemToCarrito(producto.id, cantidad));
     } catch (requestError) {
       setError(requestError.message);
       throw requestError;
@@ -84,21 +56,7 @@ export function CarritoProvider({ children }) {
 
   const cambiarCantidad = async (id, cantidad) => {
     try {
-      const response = await fetch(`${API_URL}/items/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ cantidad })
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          await getErrorMessage(response, 'No se pudo actualizar la cantidad')
-        );
-      }
-
-      aplicarCarrito(await response.json());
+      aplicarCarrito(await updateCantidadCarrito(id, cantidad));
     } catch (requestError) {
       setError(requestError.message);
       throw requestError;
@@ -107,17 +65,7 @@ export function CarritoProvider({ children }) {
 
   const quitarDelCarrito = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/items/${id}`, {
-        method: 'DELETE'
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          await getErrorMessage(response, 'No se pudo quitar el producto del carrito')
-        );
-      }
-
-      aplicarCarrito(await response.json());
+      aplicarCarrito(await removeItemFromCarrito(id));
     } catch (requestError) {
       setError(requestError.message);
       throw requestError;
@@ -126,17 +74,7 @@ export function CarritoProvider({ children }) {
 
   const vaciarCarrito = async () => {
     try {
-      const response = await fetch(API_URL, {
-        method: 'DELETE'
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          await getErrorMessage(response, 'No se pudo vaciar el carrito')
-        );
-      }
-
-      aplicarCarrito(await response.json());
+      aplicarCarrito(await clearCarrito());
     } catch (requestError) {
       setError(requestError.message);
       throw requestError;
