@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useCarrito } from '../context/useCarrito';
+import { ShoppingCart } from 'lucide-react';
 
 function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
   const { agregarAlCarrito, carrito } = useCarrito();
@@ -119,7 +120,11 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
                 : `Agregar ${prod.nombre} al carrito`
             }
           >
-            {sinStock ? 'Agotado' : cantidadEnCarrito > 0 ? `🛒 ${cantidadEnCarrito}` : '🛒'}
+            {sinStock ? (
+              'Agotado'
+            ) : (
+              <ShoppingCart size={21} strokeWidth={2} aria-hidden="true" />
+            )}
           </button>
 
         </div>
