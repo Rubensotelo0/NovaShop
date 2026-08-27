@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { ShoppingCart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 import '../styles/DetalleProducto.css';
 import Header from './Header';
 import { useCarrito } from '../context/useCarrito';
@@ -17,6 +17,30 @@ function DetalleProducto() {
   const [cantidad, setCantidad] = useState(1);
   const {agregarAlCarrito, carrito, error: errorCarrito} = useCarrito();
 
+  const itemEnCarrito = carrito.find((item) => String(item.id) === String(producto?.id));
+  const cantidadEnCarrito = itemEnCarrito?.cantidad || 0;
+  const stockDisponible = producto
+    ? Math.max(producto.stock - cantidadEnCarrito, 0)
+    : 0;
+
+  useEffect(() => {
+    window.scrollTo({
+      top: window.innerHeight * 0.1,
+      behavior: 'smooth'
+    });
+  }, [id]);
+
+  useEffect(() => {
+    if (stockDisponible === 0) {
+      setCantidad(1);
+      return;
+    }
+
+    if (cantidad > stockDisponible) {
+      setCantidad(stockDisponible);
+    }
+  }, [cantidad, stockDisponible]);
+
 
   if (cargando) {
     return <div className="detalle-error"><h2>Cargando producto...</h2></div>;
@@ -32,21 +56,6 @@ function DetalleProducto() {
       </div>
     );
   }
-
-  const itemEnCarrito = carrito.find((item) => String(item.id) === String(producto.id));
-  const cantidadEnCarrito = itemEnCarrito?.cantidad || 0;
-  const stockDisponible = Math.max(producto.stock - cantidadEnCarrito, 0);
-
-  useEffect(() => {
-    if (stockDisponible === 0) {
-      setCantidad(1);
-      return;
-    }
-
-    if (cantidad > stockDisponible) {
-      setCantidad(stockDisponible);
-    }
-  }, [cantidad, stockDisponible]);
 
   const aumentarCantidad = () => {
     if (cantidad < stockDisponible) {
@@ -82,7 +91,7 @@ function DetalleProducto() {
           <Link
           to={`/productos/${productoAnterior.id}`}
           className="gallery-arrow left">
-            ‹
+            <ChevronLeft size={24} strokeWidth={2} aria-hidden="true" />
           </Link>
           )}
 
@@ -99,12 +108,9 @@ function DetalleProducto() {
             to={`/productos/${productoSiguiente.id}`}
             className="gallery-arrow right"
             >
-              ›
+              <ChevronRight size={24} strokeWidth={2} aria-hidden="true" />
             </Link>
           )}
-          <button className="zoom-button">
-            +
-          </button>
 
         </section>
 
@@ -122,24 +128,19 @@ function DetalleProducto() {
 
           {/* DESCRIPCIÓN */}
 
-          <p className="description">
-            {producto.desc}
-          </p>
-
-
           {/* MARCA / ARTÍCULO */}
 
           <div className="brand">
 
             <span>
-              {producto.marca}
+              Marca
             </span>
 
-            {/*<div></div>*/}
+            <div></div>
 
-            <small>
-              {/*Art: {producto.id}*/}
-            </small>
+            <span>
+              {producto.marca}
+            </span>
 
           </div>
 
@@ -152,12 +153,7 @@ function DetalleProducto() {
 
           <div className="quantity-control">
 
-            <button
-              onClick={disminuirCantidad}
-              aria-label="Disminuir cantidad"
-            >
-              − 
-            </button>
+
             <button
               onClick={aumentarCantidad}
               aria-label="Aumentar cantidad"
@@ -170,19 +166,11 @@ function DetalleProducto() {
             </span>
 
           <button
-            onClick={() => agregarAlCarrito(producto, cantidad)}
-            disabled={stockDisponible === 0}
-            aria-label="Añadir al carrito"
+            onClick={disminuirCantidad}
+            aria-label="Disminuir cantidad"
           >
-
-            <span className="cart-small">
-              <ShoppingCart size={20} strokeWidth={2} aria-hidden="true" />
-            </span>
-
-            {stockDisponible === 0 && 'Agotado'}
-
-          </button>
-
+              − 
+          </button> 
 
           </div>
 
@@ -203,23 +191,43 @@ function DetalleProducto() {
           </div>
 
 
-          {/* CARRITO */}
+          {/* COMPRAR E IR AL CARRITO */}
 
           <Link
+            to="/datosEnv"
+            className="comprar-cart"
+          >
+            Comprar ahora
+          </Link>
+
+          <button
             className="add-cart"
-            to="/carrito"
-            aria-label="Ir al carrito"
+            onClick={() => agregarAlCarrito(producto, cantidad)}
+            disabled={stockDisponible === 0}
+            aria-label="Añadir al carrito"
           >
 
-            Ir al carrito
+            <span className="cart-small">
+              <ShoppingCart size={20} strokeWidth={2} aria-hidden="true" />
+            </span>
 
-          </Link>
+            {stockDisponible > 0 ? 'Añadir al carrito' : 'Agotado'}
+
+          </button>
 
           {errorCarrito && (
             <p className="stock">
               {errorCarrito}
             </p>
           )}
+
+          <div className="quantity-title">
+            Descripción del producto:
+          </div>
+
+          <p className="description">
+            {producto.desc}
+          </p>
 
 
           {/* VOLVER */}

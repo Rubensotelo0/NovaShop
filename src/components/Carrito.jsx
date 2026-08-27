@@ -1,9 +1,17 @@
 import { useCarrito } from '../context/useCarrito';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import '../styles/Carrito.css';
 import Header from './Header';
 
 function Carrito() {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
 
   const {
     carrito,
