@@ -3,6 +3,7 @@ import { useCarrito } from '../context/useCarrito';
 import { useEffect, useRef, useState } from 'react';
 import '../styles/Header.css';
 import { Menu, Moon, Search, ShoppingCart, Sun, UserRound } from 'lucide-react';
+import { useProductos } from '../context/useProductos';
 
 function Header() {
 
@@ -11,6 +12,7 @@ function Header() {
   // ==============================
 
   const { carrito } = useCarrito();
+  const { productos } = useProductos();
 
   const cantidadCarrito = carrito.reduce(
     (total, item) => total + item.cantidad,
@@ -29,11 +31,49 @@ function Header() {
   const [usuarioAbierto, setUsuarioAbierto] = useState(false);
   const [modoOscuro, setModoOscuro] = useState(false);
   const [scrolled, setScrolled] = useState(() => window.scrollY > 0);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const categoriaActiva = searchParams.get('categoria') || 'todas';
+  const terminoBusqueda = searchParams.get('q') || '';
+  const [textoBusqueda, setTextoBusqueda] = useState(terminoBusqueda);
+  const [sugerenciasAbiertas, setSugerenciasAbiertas] = useState(false);
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const usuarioRef = useRef(null);
+  const buscadorRef = useRef(null);
+
+  const sugerencias = productos
+    .filter((producto) => {
+      const termino = textoBusqueda.trim().toLowerCase();
+      return termino && producto.nombre.toLowerCase().includes(termino);
+    })
+    .slice(0, 5);
+
+  const abrirDetalle = (producto) => {
+    setSugerenciasAbiertas(false);
+    setTextoBusqueda(producto.nombre);
+    navigate(`/productos/${producto.id}`);
+  };
+
+  const buscarProductos = (event) => {
+    event.preventDefault();
+    const productoSeleccionado = sugerencias[0];
+
+    if (productoSeleccionado) {
+      abrirDetalle(productoSeleccionado);
+      return;
+    }
+
+    const nuevosParametros = new URLSearchParams(searchParams);
+    const termino = textoBusqueda.trim();
+
+    if (termino) {
+      nuevosParametros.set('q', termino);
+    } else {
+      nuevosParametros.delete('q');
+    }
+
+    setSearchParams(nuevosParametros);
+  };
 
 
   // ==============================
@@ -83,6 +123,14 @@ function Header() {
       setUsuarioAbierto(false);
     }
 
+    if (
+      sugerenciasAbiertas &&
+      buscadorRef.current &&
+      !buscadorRef.current.contains(event.target)
+    ) {
+      setSugerenciasAbiertas(false);
+    }
+
   };
 
   document.addEventListener(
@@ -97,7 +145,7 @@ function Header() {
     );
   };
 
-}, [menuAbierto, usuarioAbierto]);
+}, [menuAbierto, usuarioAbierto, sugerenciasAbiertas]);
 
 
   // ==============================
@@ -200,18 +248,42 @@ function Header() {
             BUSCADOR
         ============================== */}
 
-        <div className="header-buscador">
+        <form className="header-buscador" onSubmit={buscarProductos} ref={buscadorRef}>
 
           <input
             type="text"
-            placeholder="Search"
+            value={textoBusqueda}
+            onChange={(event) => {
+              setTextoBusqueda(event.target.value);
+              setSugerenciasAbiertas(true);
+            }}
+            onFocus={() => setSugerenciasAbiertas(true)}
+            placeholder="Buscar productos"
+            aria-label="Buscar productos"
           />
 
-          <button type="button" aria-label="Buscar" title="Buscar">
+          <button type="submit" aria-label="Buscar" title="Buscar">
             <Search size={19} strokeWidth={2} aria-hidden="true" />
           </button>
 
-        </div>
+          {sugerenciasAbiertas && textoBusqueda.trim() && (
+            <div className="buscador-sugerencias" role="listbox" aria-label="Sugerencias de productos">
+              {sugerencias.length > 0 ? sugerencias.map((producto) => (
+                <button
+                  type="button"
+                  className="buscador-sugerencia"
+                  key={producto.id}
+                  onClick={() => abrirDetalle(producto)}
+                >
+                  <strong>{producto.nombre}</strong>
+                </button>
+              )) : (
+                <p className="buscador-sin-resultados">No encontramos ese producto.</p>
+              )}
+            </div>
+          )}
+
+        </form>
 
 
         {/* ==============================

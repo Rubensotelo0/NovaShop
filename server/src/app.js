@@ -23,13 +23,26 @@ app.get('/api/db-status', async (_request, response) => {
   }
 });
 
-app.get('/api/productos', async (_request, response) => {
+app.get('/api/productos', async (request, response) => {
   try {
+    const termino = request.query.q?.trim() || '';
+    const parametros = [];
+    let filtroBusqueda = '';
+
+    if (termino) {
+      filtroBusqueda = `
+        WHERE nombre LIKE ?
+      `;
+      const terminoLike = `%${termino}%`;
+      parametros.push(terminoLike);
+    }
+
     const [productos] = await pool.query(`
       SELECT id, nombre, marca, descripcion, precio, descuento, imagen, stock
       FROM productos
+      ${filtroBusqueda}
       ORDER BY id
-    `);
+    `, parametros);
 
     response.json(productos.map((producto) => ({
       ...producto,

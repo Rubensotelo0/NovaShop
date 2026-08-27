@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "prestart": "node ../scripts/ensure-port.js 3000",
     "start": "node src/app.js",
+    "predev": "node ../scripts/ensure-port.js 3000",
     "dev": "nodemon --watch src --ext js,mjs,cjs,json src/app.js",
     "build": "vite build",
     "lint": "eslint .",

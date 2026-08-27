@@ -268,6 +268,7 @@
 ========================================= */
 
 .header-buscador {
+  position: relative;
   display: flex;
   align-items: center;
 
@@ -280,11 +281,106 @@
 
   border-radius: 15px;
 
-  overflow: hidden;
+  overflow: visible;
 
   transition:
     background 0.2s ease,
     border-color 0.2s ease;
+}
+
+.buscador-sugerencias {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  overflow: hidden;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid rgba(0, 56, 90, 0.18);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 32, 52, 0.18);
+}
+
+.buscador-sugerencia {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #00385a;
+  text-align: left;
+  cursor: pointer;
+}
+
+.header-buscador .buscador-sugerencia {
+  width: 100%;
+  height: auto;
+  min-height: 48px;
+  display: flex;
+  justify-content: flex-start;
+  color: #00385a;
+}
+
+.buscador-sugerencia:hover,
+.buscador-sugerencia:focus-visible {
+  background: #eef5f7;
+  outline: none;
+}
+
+.buscador-sugerencia span {
+  display: grid;
+  min-width: 0;
+}
+
+.buscador-sugerencia strong,
+.buscador-sugerencia small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.buscador-sugerencia strong {
+  font-size: 0.78rem;
+}
+
+.buscador-sugerencia small {
+  margin-top: 2px;
+  color: #557080;
+  font-size: 0.68rem;
+}
+
+.buscador-sin-resultados {
+  margin: 8px 10px;
+  color: #557080;
+  font-size: 0.75rem;
+}
+
+.header-tienda.header-scrolled .buscador-sugerencias,
+.header-tienda:not(.header-scrolled):hover .buscador-sugerencias {
+  background: #00385a;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.header-tienda.header-scrolled .buscador-sugerencia,
+.header-tienda:not(.header-scrolled):hover .buscador-sugerencia {
+  color: white;
+}
+
+.header-tienda.header-scrolled .buscador-sugerencia:hover,
+.header-tienda.header-scrolled .buscador-sugerencia:focus-visible,
+.header-tienda:not(.header-scrolled):hover .buscador-sugerencia:hover,
+.header-tienda:not(.header-scrolled):hover .buscador-sugerencia:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.header-tienda.header-scrolled .buscador-sin-resultados,
+.header-tienda:not(.header-scrolled):hover .buscador-sin-resultados {
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .header-buscador input {

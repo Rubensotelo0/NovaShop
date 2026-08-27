@@ -210,7 +210,7 @@ body {
 
   border-radius: 10px;
 
-  overflow: hidden;
+  overflow: visible;
 
   transition:
     background 0.2s ease,
