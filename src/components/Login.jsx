@@ -4,26 +4,38 @@ import Header from './Header';
 import { Link } from 'react-router-dom';
 
 function Login() {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
     console.log('Email:', email);
     console.log('Password:', password);
   };
 
   return (
     <div className="login-page">
+
+      {/* HEADER */}
       <Header />
 
+      {/* CONTENIDO DEL LOGIN */}
       <main className="login-container">
+
         <div className="login-card">
+
           <h2>Iniciar Sesion</h2>
 
           <form onSubmit={handleSubmit}>
+
             <div className="form-group">
-              <label htmlFor="email">Correo electronico</label>
+
+              <label htmlFor="email">
+                Correo electronico
+              </label>
+
               <input
                 id="email"
                 type="email"
@@ -32,10 +44,15 @@ function Login() {
                 placeholder="correo@ejemplo.com"
                 required
               />
+
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Contrasena</label>
+
+              <label htmlFor="password">
+                Contraseña
+              </label>
+
               <input
                 id="password"
                 type="password"
@@ -44,14 +61,23 @@ function Login() {
                 placeholder="********"
                 required
               />
+
             </div>
 
-            <button type="submit">Iniciar Sesion</button>
+            <button type="submit">
+              Iniciar Sesion
+            </button>
+
           </form>
 
-          <Link to="/">Volver a la tienda</Link>
+          <Link to={"/registro"}>
+          Registrate
+          </Link>
+
         </div>
+
       </main>
+
     </div>
   );
 }
