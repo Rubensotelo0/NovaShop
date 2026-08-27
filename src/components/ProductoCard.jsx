@@ -5,17 +5,25 @@ import { ShoppingCart } from 'lucide-react';
 
 function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
   const { agregarAlCarrito, carrito } = useCarrito();
-  const itemEnCarrito = carrito.find((item) => String(item.id) === String(prod.id));
+
+  const itemEnCarrito = carrito.find(
+    (item) => String(item.id) === String(prod.id)
+  );
+
   const cantidadEnCarrito = itemEnCarrito?.cantidad || 0;
   const sinStock = cantidadEnCarrito >= prod.stock;
+
   const [animandoCarrito, setAnimandoCarrito] = useState(false);
   const [ultimoAgregado, setUltimoAgregado] = useState(0);
+
   const cantidadAnterior = useRef(cantidadEnCarrito);
 
   useEffect(() => {
     if (cantidadEnCarrito > cantidadAnterior.current) {
       setAnimandoCarrito(true);
-      setUltimoAgregado(cantidadEnCarrito - cantidadAnterior.current);
+      setUltimoAgregado(
+        cantidadEnCarrito - cantidadAnterior.current
+      );
 
       const timer = setTimeout(() => {
         setAnimandoCarrito(false);
@@ -23,6 +31,7 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
       }, 900);
 
       cantidadAnterior.current = cantidadEnCarrito;
+
       return () => clearTimeout(timer);
     }
 
@@ -30,13 +39,19 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
   }, [cantidadEnCarrito]);
 
   return (
-    <article className={`producto-card ${animandoCarrito ? 'producto-card-agregado' : ''}`}>
+    <article
+      className={`producto-card ${
+        animandoCarrito ? 'producto-card-agregado' : ''
+      }`}
+    >
+      {/* LINK PARA VER EL PRODUCTO */}
       <Link
         to={`/productos/${prod.id}`}
         className="producto-card-link"
         aria-label={`Ver detalles de ${prod.nombre}`}
       />
 
+      {/* IMAGEN */}
       <div className="producto-imagen producto-imagen-hover">
 
         <span className="producto-badge">
@@ -51,31 +66,40 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
           />
         </div>
 
+        {/* FAVORITO */}
         <button
-        className={`btn-favorito ${favorito ? 'activo' : ''}`}
-        aria-label={
+          className={`btn-favorito ${
+            favorito ? 'activo' : ''
+          }`}
+          aria-label={
             favorito
-            ? 'Quitar de favoritos'
-            : 'Agregar a favoritos'
-        }
-        onClick={() => onToggleFavorito(prod.id)}
+              ? 'Quitar de favoritos'
+              : 'Agregar a favoritos'
+          }
+          onClick={() => onToggleFavorito(prod.id)}
         >
-        <svg
+          <svg
             className="corazon"
             viewBox="0 0 24 24"
             aria-hidden="true"
-        >
+          >
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" />
-        </svg>
+          </svg>
         </button>
 
+        {/* RESUMEN DEL CARRITO */}
         {cantidadEnCarrito > 0 && (
-          <div className={`producto-carrito-resumen ${animandoCarrito ? 'activo' : ''}`}>
+          <div
+            className={`producto-carrito-resumen ${
+              animandoCarrito ? 'activo' : ''
+            }`}
+          >
             <strong>{cantidadEnCarrito}</strong>
             <span>agregados</span>
           </div>
         )}
 
+        {/* ANIMACIÓN DE PRODUCTO AGREGADO */}
         {ultimoAgregado > 0 && (
           <div className="producto-agregado-burst">
             +{ultimoAgregado}
@@ -84,34 +108,57 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
 
       </div>
 
+      {/* INFORMACIÓN DEL PRODUCTO */}
       <div className="producto-info">
 
+        {/* DESCUENTO */}
+        <div className="producto-descuento-container">
+          {prod.descuento > 0 ? (
+            <div className="producto-descuento">
+              -{prod.descuento}%
+            </div>
+          ) : (
+            <div className="producto-descuento-placeholder"></div>
+          )}
+        </div>
+
+        {/* MARCA */}
         <span className="producto-categoria">
           {prod.categoriaNombre || 'COLECCIÓN NOVA'}
         </span>
 
+        {/* NOMBRE */}
         <h2 className="producto-nombre">
           {prod.nombre}
         </h2>
 
-        <p className="producto-desc">
-          {prod.desc}
-        </p>
-
+        {/* FOOTER DE LA CARD */}
         <div className="producto-footer">
 
-          <div>
-            <span className="precio-label">
-              Precio
-            </span>
+          {/* PRECIOS */}
+          <div className="producto-precios">
+
+            {prod.descuento > 0 && (
+              <span className="producto-precio-original">
+                ${prod.precio.toFixed(2)}
+              </span>
+            )}
 
             <p className="producto-precio">
-              {'$' + prod.precio.toFixed(2)}
+              $
+              {(
+                prod.precio *
+                (1 - prod.descuento / 100)
+              ).toFixed(2)}
             </p>
+
           </div>
 
+          {/* BOTÓN CARRITO */}
           <button
-            className={`btn-agregar-carrito ${animandoCarrito ? 'agregado' : ''}`}
+            className={`btn-agregar-carrito ${
+              animandoCarrito ? 'agregado' : ''
+            }`}
             onClick={() => agregarAlCarrito(prod)}
             disabled={sinStock}
             aria-label={
@@ -123,14 +170,17 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
             {sinStock ? (
               'Agotado'
             ) : (
-              <ShoppingCart size={21} strokeWidth={2} aria-hidden="true" />
+              <ShoppingCart
+                size={21}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
             )}
           </button>
 
         </div>
 
       </div>
-
     </article>
   );
 }

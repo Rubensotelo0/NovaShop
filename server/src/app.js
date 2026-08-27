@@ -139,8 +139,11 @@ async function buildCartResponse(connection = pool) {
 
   const normalizedItems = items.map((item) => {
     const cantidad = Number(item.cantidad);
-    const precioUnitario = Number(item.precio_unitario);
     const precioProducto = Number(item.precio);
+    const descuento = Number(item.descuento || 0);
+    const precioUnitario = Number(
+      (precioProducto * (1 - descuento / 100)).toFixed(2)
+    );
 
     return {
       id: String(item.producto_id),
