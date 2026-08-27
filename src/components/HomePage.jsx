@@ -86,6 +86,49 @@ function HomePage() {
   <div className="catalogo-linea"></div>
 </div>
 
+  <div className="promocion-banner">
+
+    <div className="promocion-imagen">
+
+      <img
+        src="/src/assets/tec.png"
+        alt="Teclado y mouse inalámbricos HP 650"
+      />
+
+    </div>
+
+    <div className="promocion-contenido">
+
+      <span className="promocion-etiqueta">
+        OFERTA ESPECIAL
+      </span>
+
+      <h2>
+        En todas las compras en mouse y teclados
+      </h2>
+
+      <p className="promocion-principal">
+        Compra uno
+        <strong> y recibe su complemento GRATIS.</strong>
+      </p>
+
+      <p className="promocion-secundaria">
+        ¿Ya tienes teclado? No hay problemazzz.
+        <br />
+        Compra un mouse y recibe un tecladozzz.
+      </p>
+
+      <Link
+        to="/"
+        className="promocion-boton"
+      >
+        Aprovechar oferta
+      </Link>
+
+    </div>
+
+  </div>
+
 
         {/* PRODUCTOS */}
         <div className="productos-grid">

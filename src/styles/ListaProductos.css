@@ -1168,6 +1168,373 @@ body {
   border-top: 1px solid var(--border);
 }
 
+/* =========================================
+   BANNER DE PROMOCIÓN
+========================================= */
+
+.promocion-banner {
+
+  display: grid;
+
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+
+  align-items: center;
+
+  min-height: 300px;
+
+  margin: 0 0 42px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 15% 50%,
+      rgba(99, 102, 241, 0.18),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #00385a,
+      #012c47
+    );
+
+  border-radius: var(--radius);
+
+  box-shadow:
+    0 20px 45px rgba(0, 56, 90, 0.18);
+}
+
+
+/* =========================================
+   IMAGEN
+========================================= */
+
+.promocion-imagen {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 330px;
+
+  padding: 10px 0px 10px 0px;
+
+  overflow: hidden;
+  background: transparent;
+}
+
+
+.promocion-imagen img {
+
+  display: block;
+
+  width: 115%;
+
+  max-width: 650px;
+
+  height: 360px;
+
+  object-fit: contain;
+  background: transparent;
+  transform: scale(1.12);
+
+  transition:
+    transform 0.4s ease;
+}
+
+
+.promocion-banner:hover .promocion-imagen img {
+
+  transform: scale(1.20);
+}
+
+
+/* =========================================
+   CONTENIDO
+========================================= */
+
+.promocion-contenido {
+
+  padding: 36px 42px 36px 10px;
+
+  color: #ffffff;
+}
+
+
+/* =========================================
+   ETIQUETA
+========================================= */
+
+.promocion-etiqueta {
+
+  display: inline-block;
+
+  margin-bottom: 12px;
+
+  padding: 6px 10px;
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  color: rgba(255, 255, 255, 0.85);
+
+  font-size: 0.72rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================
+   TÍTULO
+========================================= */
+
+.promocion-contenido h2 {
+
+  max-width: 420px;
+
+  margin: 0 0 14px;
+
+  color: #ffffff;
+
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+
+  font-weight: 850;
+
+  line-height: 1.05;
+
+  letter-spacing: -0.8px;
+}
+
+
+/* =========================================
+   TEXTO PRINCIPAL
+========================================= */
+
+.promocion-principal {
+
+  max-width: 430px;
+
+  margin: 0 0 12px;
+
+  color: rgba(255, 255, 255, 0.9);
+
+  font-size: 1rem;
+
+  line-height: 1.5;
+}
+
+
+.promocion-principal strong {
+
+  color: #ffffff;
+
+  font-weight: 850;
+}
+
+
+/* =========================================
+   TEXTO SECUNDARIO
+========================================= */
+
+.promocion-secundaria {
+
+  max-width: 430px;
+
+  margin: 0 0 24px;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  font-size: 0.82rem;
+
+  line-height: 1.55;
+}
+
+
+/* =========================================
+   BOTÓN
+========================================= */
+
+.promocion-boton {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 12px 20px;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #00385a;
+
+  font-size: 0.85rem;
+
+  font-weight: 800;
+
+  text-decoration: none;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+
+.promocion-boton:hover {
+
+  background: #eaf4f7;
+
+  color: #00385a;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 800px) {
+
+  .promocion-banner {
+
+    grid-template-columns: 1fr;
+
+    min-height: auto;
+
+  }
+
+
+  .promocion-imagen {
+
+    min-height: 230px;
+
+    padding: 24px 30px 0;
+
+  }
+
+
+  .promocion-imagen img {
+
+    height: 210px;
+
+  }
+
+
+  .promocion-contenido {
+
+    padding: 10px 30px 32px;
+
+    text-align: center;
+
+  }
+
+
+  .promocion-contenido h2 {
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+  }
+
+
+  .promocion-principal,
+  .promocion-secundaria {
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+  }
+
+}
+
+
+/* =========================================
+   MÓVIL
+========================================= */
+
+@media (max-width: 500px) {
+
+  .promocion-banner {
+
+    margin-bottom: 30px;
+
+    border-radius: 16px;
+
+  }
+
+
+  .promocion-imagen {
+
+    min-height: 190px;
+
+    padding: 20px 20px 0;
+
+  }
+
+
+  .promocion-imagen img {
+
+    height: 170px;
+
+  }
+
+
+  .promocion-contenido {
+
+    padding: 8px 22px 26px;
+
+  }
+
+
+  .promocion-contenido h2 {
+
+    font-size: 1.7rem;
+
+  }
+
+
+  .promocion-principal {
+
+    font-size: 0.9rem;
+
+  }
+
+
+  .promocion-secundaria {
+
+    font-size: 0.78rem;
+
+  }
+
+
+  .promocion-boton {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+  }
+
+}
+
 
 /* =========================================
    TABLET
