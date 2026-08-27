@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { ShoppingCart } from 'lucide-react';
 import '../styles/DetalleProducto.css';
 import Header from './Header';
 import { useCarrito } from '../context/useCarrito';
@@ -155,19 +156,33 @@ function DetalleProducto() {
               onClick={disminuirCantidad}
               aria-label="Disminuir cantidad"
             >
-              −
+              − 
             </button>
-
-            <span>
-              {cantidad}
-            </span>
-
             <button
               onClick={aumentarCantidad}
               aria-label="Aumentar cantidad"
             >
               +
             </button>
+
+            <span>
+              {cantidad}
+            </span>
+
+          <button
+            onClick={() => agregarAlCarrito(producto, cantidad)}
+            disabled={stockDisponible === 0}
+            aria-label="Añadir al carrito"
+          >
+
+            <span className="cart-small">
+              <ShoppingCart size={20} strokeWidth={2} aria-hidden="true" />
+            </span>
+
+            {stockDisponible === 0 && 'Agotado'}
+
+          </button>
+
 
           </div>
 
@@ -190,19 +205,15 @@ function DetalleProducto() {
 
           {/* CARRITO */}
 
-          <button
+          <Link
             className="add-cart"
-            onClick={() => agregarAlCarrito(producto, cantidad)}
-            disabled={stockDisponible === 0}
+            to="/carrito"
+            aria-label="Ir al carrito"
           >
 
-            <span className="cart-small">
-              🛒
-            </span>
+            Ir al carrito
 
-            {stockDisponible > 0 ? 'Añadir al carrito' : 'Agotado'}
-
-          </button>
+          </Link>
 
           {errorCarrito && (
             <p className="stock">

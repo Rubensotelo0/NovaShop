@@ -204,7 +204,7 @@ function Header() {
 
   const irAlTopCategoria = () => {
     window.scrollTo({
-      top: 530,
+      top: 950,
       behavior: 'smooth'
     });
   };
