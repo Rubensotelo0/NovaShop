@@ -127,9 +127,36 @@ function Header() {
     });
   };
 
+    const volverAlFooter = (event) => {
+    event.preventDefault();
+    navigate('/');
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+  };
+
+      const volverAlFavoritos = (event) => {
+    event.preventDefault();
+    navigate('/favoritos');
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+      const volverAlMiPerfil = (event) => {
+    event.preventDefault();
+    navigate('/perfil');
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   const irAlTopCategoria = () => {
     window.scrollTo({
-      top: 620,
+      top: 530,
       behavior: 'smooth'
     });
   };
@@ -160,7 +187,7 @@ function Header() {
             aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
             title={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
           >
-            <Menu size={22} strokeWidth={2} aria-hidden="true" />
+            <Menu size={25} strokeWidth={2} aria-hidden="true" />
           </button>
                 
                 {/* ==============================
@@ -173,19 +200,19 @@ function Header() {
 
             <nav>
 
-            <Link to="/">
+            <Link to="/" onClick={volverAlInicio}>
               Inicio
             </Link>
             
-            <Link to="/perfil">
+            <Link to="/perfil" onClick={volverAlMiPerfil}>
               Mi perfil
             </Link>
 
-            <Link to="/favoritos">
+            <Link to="/favoritos" onClick={volverAlFavoritos}>
               Favoritos
             </Link>
 
-            <Link to="/">
+            <Link to="/" onClick={volverAlFooter}>
               Contactanos
             </Link>
 
@@ -208,7 +235,7 @@ function Header() {
           />
 
           <button type="button" aria-label="Buscar" title="Buscar">
-            <Search size={19} strokeWidth={2} aria-hidden="true" />
+            <Search size={25} strokeWidth={2} aria-hidden="true" />
           </button>
 
         </div>
@@ -250,9 +277,9 @@ function Header() {
             title={modoOscuro ? 'Modo claro' : 'Modo oscuro'}
           >
             {modoOscuro ? (
-              <Sun size={20} strokeWidth={2} aria-hidden="true" />
+              <Sun size={25} strokeWidth={2} aria-hidden="true" />
             ) : (
-              <Moon size={20} strokeWidth={2} aria-hidden="true" />
+              <Moon size={25} strokeWidth={2} aria-hidden="true" />
             )}
           </button>
 
@@ -271,7 +298,7 @@ function Header() {
           >
 
             <span aria-hidden="true">
-              <ShoppingCart size={21} strokeWidth={2} />
+              <ShoppingCart size={25} strokeWidth={2} />
             </span>
 
             {cantidadCarrito > 0 && (
@@ -294,7 +321,7 @@ function Header() {
               aria-label="Abrir menú de usuario"
               title="Menú de usuario"
             >
-              <UserRound size={20} strokeWidth={2} aria-hidden="true" />
+              <UserRound size={25} strokeWidth={2} aria-hidden="true" />
             </button>
 
 
@@ -354,6 +381,48 @@ function Header() {
             onClick={irAlTopCategoria}
           >
             Ratón
+          </Link>
+                    <Link
+            className={categoriaActiva === 'monitores' ? 'categoria-activa' : ''}
+            to="/?categoria=monitores"
+            onClick={irAlTopCategoria}
+          >
+            Monitores
+          </Link>
+                    <Link
+            className={categoriaActiva === 'auriculares' ? 'categoria-activa' : ''}
+            to="/?categoria=auriculares"
+            onClick={irAlTopCategoria}
+          >
+            Auriculares
+          </Link>
+                    <Link
+            className={categoriaActiva === 'sillas' ? 'categoria-activa' : ''}
+            to="/?categoria=sillas"
+            onClick={irAlTopCategoria}
+          >
+            Sillas
+          </Link>
+                    <Link
+            className={categoriaActiva === 'almacenamiento' ? 'categoria-activa' : ''}
+            to="/?categoria=almacenamiento"
+            onClick={irAlTopCategoria}
+          >
+            Almacenamiento
+          </Link>
+                    <Link
+            className={categoriaActiva === 'camaras' ? 'categoria-activa' : ''}
+            to="/?categoria=camaras"
+            onClick={irAlTopCategoria}
+          >
+            Cámaras
+          </Link>
+                    <Link
+            className={categoriaActiva === 'microfonos' ? 'categoria-activa' : ''}
+            to="/?categoria=microfonos"
+            onClick={irAlTopCategoria}
+          >
+            Microfonos
           </Link>
         </nav>
 

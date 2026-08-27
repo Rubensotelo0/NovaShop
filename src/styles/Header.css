@@ -8,12 +8,12 @@
   z-index: 100;
 
   width: 100%;
-  height: 95px;
+  height: 110px;
 
   display: flex;
   align-items: center;
 
-  padding: 50px 30px;
+  padding: 70px 30px;
 
   background: transparent;
   border-bottom: 1px solid transparent;
@@ -105,6 +105,8 @@
 ========================================= */
 
 .header-menu {
+  position: relative;
+
   display: flex;
   align-items: center;
 
@@ -234,7 +236,7 @@
   border-radius: 10px;
 
   background: transparent;
-  color: #0b5a00;
+  color: #00385a;
   text-decoration: none;
 
   cursor: pointer;
@@ -538,16 +540,16 @@
 ========================================= */
 
 .menu-hamburguesa {
-  position: fixed;
+  position: absolute;
 
-  top: 95px;
-  left: 0;
+  top: calc(100% + 47px);
+  left: -30px;
 
   z-index: 99;
 
   width: 270px;
 
-  min-height: calc(100vh - 95px);
+  min-height: calc(100vh - 80px);
 
   padding: 30px 20px;
 
