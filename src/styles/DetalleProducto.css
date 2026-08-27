@@ -738,7 +738,7 @@
 }
 
 
-.quantity-control span {
+.quantity-control > span {
 
   min-width: 28px;
 
@@ -840,6 +840,7 @@
   background: var(--navy);
 
   color: #ffffff;
+  text-decoration: none;
 
   cursor: pointer;
 
@@ -882,6 +883,12 @@
 ========================================= */
 
 .cart-small {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  transform: translateY(0px);
 
   font-size: 1.05rem;
 
