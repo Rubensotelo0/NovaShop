@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCarrito } from '../context/useCarrito';
 import { useEffect, useRef, useState } from 'react';
 import '../styles/Header.css';
@@ -28,7 +28,10 @@ function Header() {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [usuarioAbierto, setUsuarioAbierto] = useState(false);
   const [modoOscuro, setModoOscuro] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(() => window.scrollY > 0);
+  const [searchParams] = useSearchParams();
+  const categoriaActiva = searchParams.get('categoria') || 'todas';
+  const navigate = useNavigate();
   const menuRef = useRef(null);
   const usuarioRef = useRef(null);
 
@@ -116,13 +119,19 @@ function Header() {
   }, []);
 
   const volverAlInicio = (event) => {
-    if (window.location.pathname === '/') {
-      event.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
+    event.preventDefault();
+    navigate('/');
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  const irAlTopCategoria = () => {
+    window.scrollTo({
+      top: 620,
+      behavior: 'smooth'
+    });
   };
 
 
@@ -316,6 +325,37 @@ function Header() {
           </div>
 
         </div>
+
+        <nav className="header-categorias" aria-label="Categorías de productos">
+          <Link
+            className={categoriaActiva === 'todas' ? 'categoria-activa' : ''}
+            to="/?categoria=todas"
+            onClick={irAlTopCategoria}
+          >
+            Todas
+          </Link>
+          <Link
+            className={categoriaActiva === 'laptop' ? 'categoria-activa' : ''}
+            to="/?categoria=laptop"
+            onClick={irAlTopCategoria}
+          >
+            Laptop
+          </Link>
+          <Link
+            className={categoriaActiva === 'teclado' ? 'categoria-activa' : ''}
+            to="/?categoria=teclado"
+            onClick={irAlTopCategoria}
+          >
+            Teclado
+          </Link>
+          <Link
+            className={categoriaActiva === 'raton' ? 'categoria-activa' : ''}
+            to="/?categoria=raton"
+            onClick={irAlTopCategoria}
+          >
+            Ratón
+          </Link>
+        </nav>
 
       </header>
 

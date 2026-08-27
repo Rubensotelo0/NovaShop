@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import '../styles/ListaProductos.css';
 import { useEffect, useRef, useState } from 'react';
 import ProductoCard from './ProductoCard';
@@ -7,10 +7,25 @@ import { useCarrito } from '../context/useCarrito';
 import Hero from './hero.jsx';
 import { useProductos } from '../context/useProductos';
 
+const categoriasPorProducto = {
+  '1': 'laptop',
+  '2': 'teclado',
+  '3': 'raton',
+  '4': 'laptop',
+  '5': 'teclado',
+  '6': 'raton',
+  '7': 'laptop',
+  '8': 'teclado',
+  '9': 'raton'
+};
+
 function HomePage() {
 
   const { carrito } = useCarrito();
   const { productos, cargando, error } = useProductos();
+  const [searchParams] = useSearchParams();
+  const categoriaSeleccionada = searchParams.get('categoria');
+  const filtroActivo = categoriaSeleccionada && categoriaSeleccionada !== 'todas';
   const cantidadCarrito = carrito.reduce(
     (total, item) => total + item.cantidad,
     0
@@ -60,6 +75,17 @@ function HomePage() {
     });
   };
 
+  const productosConCategoria = productos.map((producto) => ({
+    ...producto,
+    categoria: producto.categoria || categoriasPorProducto[String(producto.id)]
+  }));
+
+  const productosVisibles = filtroActivo
+    ? productosConCategoria.filter(
+      (producto) => producto.categoria === categoriaSeleccionada
+    )
+    : productosConCategoria;
+
   return (
     <div className="tienda">
 
@@ -69,22 +95,7 @@ function HomePage() {
       {/* CONTENIDO */}
       <main className="lista-container">
 
-<div className="catalogo-header">
 
-  <h2 className="catalogo-label">
-    NUESTRA <span>COLECCIÓN</span>
-  </h2>
-
-  <p className="catalogo-subtitulo">
-    Descubre nuestra selección de productos pensados para ti.
-  </p>
-
-  <p className="catalogo-subtitulo2">
-    No solo compras ofertas, también experiencias.
-  </p>
-
-  <div className="catalogo-linea"></div>
-</div>
 
   <div className="promocion-banner">
 
@@ -129,12 +140,20 @@ function HomePage() {
 
   </div>
 
+  <div id="catalogo" className="catalogo-header">
+
+  <h2 className="catalogo-label">
+    {filtroActivo ? categoriaSeleccionada.toUpperCase() : 'NUESTRA'} <span>{filtroActivo ? 'CATEGORÍA' : 'COLECCIÓN'}</span>
+  </h2>
+
+</div>
+
 
         {/* PRODUCTOS */}
         <div className="productos-grid">
           {cargando && <p>Cargando productos...</p>}
           {error && <p>{error}</p>}
-          {!cargando && !error && productos.map((prod, index) => (
+          {!cargando && !error && productosVisibles.map((prod, index) => (
             <ProductoCard
               key={prod.id}
               prod={prod}
@@ -144,7 +163,28 @@ function HomePage() {
             />
           ))}
 
+          {!cargando && !error && productosVisibles.length === 0 && (
+            <p>No hay productos en esta categoría.</p>
+          )}
+
         </div>
+
+        <div id="catalogo" className="catalogo-header">
+
+  <h2 className="catalogo-label">
+    SOBRE <span>NOSOTROS</span>
+  </h2>
+
+  <p className="catalogo-subtitulo">
+    Descubre nuestra selección de productos pensados para ti.
+  </p>
+
+  <p className="catalogo-subtitulo2">
+    No solo compras ofertas, también experiencias.
+  </p>
+
+  <div className="catalogo-linea"></div>
+</div>
 
       </main>
 
