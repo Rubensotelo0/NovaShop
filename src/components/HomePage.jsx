@@ -11,12 +11,12 @@ const categoriasPorProducto = {
   '1': 'laptop',
   '2': 'teclado',
   '3': 'raton',
-  '4': 'laptop',
-  '5': 'teclado',
-  '6': 'raton',
-  '7': 'laptop',
-  '8': 'teclado',
-  '9': 'raton'
+  '4': 'monitores',
+  '5': 'auriculares',
+  '6': 'sillas',
+  '7': 'almacenamiento',
+  '8': 'camaras',
+  '9': 'microfonos'
 };
 
 function HomePage() {
