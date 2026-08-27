@@ -7,25 +7,16 @@ import { useCarrito } from '../context/useCarrito';
 import Hero from './hero.jsx';
 import { useProductos } from '../context/useProductos';
 
-const categoriasPorProducto = {
-  '1': 'laptop',
-  '2': 'teclado',
-  '3': 'raton',
-  '4': 'monitores',
-  '5': 'auriculares',
-  '6': 'sillas',
-  '7': 'almacenamiento',
-  '8': 'camaras',
-  '9': 'microfonos'
-};
-
 function HomePage() {
 
   const { carrito } = useCarrito();
-  const { productos, cargando, error } = useProductos();
+  const { productos, categorias, cargando, error } = useProductos();
   const [searchParams] = useSearchParams();
-  const categoriaSeleccionada = searchParams.get('categoria');
+  const categoriaSeleccionada = searchParams.get('categoria') || 'todas';
   const filtroActivo = categoriaSeleccionada && categoriaSeleccionada !== 'todas';
+  const categoriaActual = categorias.find(
+    (categoria) => categoria.slug === categoriaSeleccionada
+  );
   const cantidadCarrito = carrito.reduce(
     (total, item) => total + item.cantidad,
     0
@@ -75,16 +66,11 @@ function HomePage() {
     });
   };
 
-  const productosConCategoria = productos.map((producto) => ({
-    ...producto,
-    categoria: producto.categoria || categoriasPorProducto[String(producto.id)]
-  }));
-
   const productosVisibles = filtroActivo
-    ? productosConCategoria.filter(
+    ? productos.filter(
       (producto) => producto.categoria === categoriaSeleccionada
     )
-    : productosConCategoria;
+    : productos;
 
   return (
     <div className="tienda">
@@ -143,7 +129,7 @@ function HomePage() {
   <div id="catalogo" className="catalogo-header">
 
   <h2 className="catalogo-label">
-    {filtroActivo ? categoriaSeleccionada.toUpperCase() : 'NUESTRA'} <span>{filtroActivo ? 'CATEGORÍA' : 'COLECCIÓN'}</span>
+    {filtroActivo ? categoriaActual?.nombre?.toUpperCase() || categoriaSeleccionada.toUpperCase() : 'NUESTRA'} <span>{filtroActivo ? 'CATEGORÍA' : 'COLECCIÓN'}</span>
   </h2>
 
 </div>

@@ -12,7 +12,7 @@ function Header() {
   // ==============================
 
   const { carrito } = useCarrito();
-  const { productos } = useProductos();
+  const { productos, categorias } = useProductos();
 
   const cantidadCarrito = carrito.reduce(
     (total, item) => total + item.cantidad,
@@ -427,75 +427,22 @@ function Header() {
 
         <nav className="header-categorias" aria-label="Categorías de productos">
           <Link
-            className={categoriaActiva === 'todas' ? 'categoria-activa' : ''}
-            to="/?categoria=todas"
+            className={!searchParams.get('categoria') || categoriaActiva === 'todas' ? 'categoria-activa' : ''}
+            to="/"
             onClick={irAlTopCategoria}
           >
             Todas
           </Link>
-          <Link
-            className={categoriaActiva === 'laptop' ? 'categoria-activa' : ''}
-            to="/?categoria=laptop"
-            onClick={irAlTopCategoria}
-          >
-            Laptop
-          </Link>
-          <Link
-            className={categoriaActiva === 'teclado' ? 'categoria-activa' : ''}
-            to="/?categoria=teclado"
-            onClick={irAlTopCategoria}
-          >
-            Teclado
-          </Link>
-          <Link
-            className={categoriaActiva === 'raton' ? 'categoria-activa' : ''}
-            to="/?categoria=raton"
-            onClick={irAlTopCategoria}
-          >
-            Ratón
-          </Link>
-                    <Link
-            className={categoriaActiva === 'monitores' ? 'categoria-activa' : ''}
-            to="/?categoria=monitores"
-            onClick={irAlTopCategoria}
-          >
-            Monitores
-          </Link>
-                    <Link
-            className={categoriaActiva === 'auriculares' ? 'categoria-activa' : ''}
-            to="/?categoria=auriculares"
-            onClick={irAlTopCategoria}
-          >
-            Auriculares
-          </Link>
-                    <Link
-            className={categoriaActiva === 'sillas' ? 'categoria-activa' : ''}
-            to="/?categoria=sillas"
-            onClick={irAlTopCategoria}
-          >
-            Sillas
-          </Link>
-                    <Link
-            className={categoriaActiva === 'almacenamiento' ? 'categoria-activa' : ''}
-            to="/?categoria=almacenamiento"
-            onClick={irAlTopCategoria}
-          >
-            Almacenamiento
-          </Link>
-                    <Link
-            className={categoriaActiva === 'camaras' ? 'categoria-activa' : ''}
-            to="/?categoria=camaras"
-            onClick={irAlTopCategoria}
-          >
-            Cámaras
-          </Link>
-                    <Link
-            className={categoriaActiva === 'microfonos' ? 'categoria-activa' : ''}
-            to="/?categoria=microfonos"
-            onClick={irAlTopCategoria}
-          >
-            Microfonos
-          </Link>
+          {categorias.map((categoria) => (
+            <Link
+              key={categoria.id}
+              className={categoriaActiva === categoria.slug ? 'categoria-activa' : ''}
+              to={`/?categoria=${categoria.slug}`}
+              onClick={irAlTopCategoria}
+            >
+              {categoria.nombre}
+            </Link>
+          ))}
         </nav>
 
       </header>

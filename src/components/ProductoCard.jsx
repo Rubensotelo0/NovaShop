@@ -87,7 +87,7 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
       <div className="producto-info">
 
         <span className="producto-categoria">
-          COLECCIÓN NOVA
+          {prod.categoriaNombre || 'COLECCIÓN NOVA'}
         </span>
 
         <h2 className="producto-nombre">
