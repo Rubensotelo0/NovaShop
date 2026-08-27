@@ -48,6 +48,8 @@ function Header() {
     })
     .slice(0, 5);
 
+  const formatearPrecio = (precio) => `$${precio.toFixed(2)} MXN`;
+
   const abrirDetalle = (producto) => {
     setSugerenciasAbiertas(false);
     setTextoBusqueda(producto.nombre);
@@ -302,7 +304,42 @@ function Header() {
                   key={producto.id}
                   onClick={() => abrirDetalle(producto)}
                 >
-                  <strong>{producto.nombre}</strong>
+                  <div className="buscador-sugerencia-imagen">
+                    <img
+                      src={producto.imagen}
+                      alt={producto.nombre}
+                    />
+                  </div>
+
+                  <div className="buscador-sugerencia-contenido">
+                    <p className="buscador-sugerencia-meta">
+                      {producto.categoriaNombre || 'Producto'} · {producto.marca}
+                    </p>
+
+                    <strong>{producto.nombre}</strong>
+
+                    <div className="buscador-sugerencia-precio">
+                      {producto.descuento > 0 && (
+                        <>
+                          <span className="buscador-sugerencia-descuento">
+                            -{producto.descuento}%
+                          </span>
+
+                          <small className="buscador-sugerencia-precio-anterior">
+                            {formatearPrecio(producto.precio)}
+                          </small>
+                        </>
+                      )}
+
+                      <span className="buscador-sugerencia-precio-final">
+                        {formatearPrecio(
+                          producto.descuento > 0
+                            ? producto.precio * (1 - producto.descuento / 100)
+                            : producto.precio
+                        )}
+                      </span>
+                    </div>
+                  </div>
                 </button>
               )) : (
                 <p className="buscador-sin-resultados">No encontramos ese producto.</p>
