@@ -1,17 +1,9 @@
 import { useCarrito } from '../context/useCarrito';
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
 import '../styles/Carrito.css';
 import Header from './Header';
 
 function Carrito() {
-
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }, []);
 
   const {
     carrito,
@@ -22,6 +14,13 @@ function Carrito() {
     cargando,
     error
   } = useCarrito();
+
+  const subtotal = carrito.reduce(
+    (acumulado, { cantidad, producto }) => {
+      return acumulado + cantidad * Number(producto.precio || 0);
+    },
+    0
+  );
 
   const totalConDescuento = carrito.reduce(
     (acumulado, { cantidad, producto }) => {
@@ -34,7 +33,7 @@ function Carrito() {
     0
   );
 
-  const descuento = (precio) => precio - totalConDescuento;
+  const descuentoTotal = subtotal - totalConDescuento;
 
 
   return (
@@ -188,10 +187,13 @@ function Carrito() {
                         Marca: {producto.marca}
                       </p>
 
-                      {total !== totalConDescuento && (
-                        <p>Ahorras $
-                          {(total - totalConDescuento).toFixed(2)}
-                           por unidad
+                      {Number(producto.descuento || 0) > 0 && (
+                        <p>
+                          Ahorras $
+                          {(
+                            Number(producto.precio || 0) * cantidad *
+                            Number(producto.descuento || 0) / 100
+                          ).toFixed(2)}
                         </p>
                       )}
 
@@ -285,16 +287,16 @@ function Carrito() {
                 </p>
 
                 <p className="carrito-total">
-                  ${total.toFixed(2)}
+                  ${subtotal.toFixed(2)}
                 </p>
 
                 <p className="carrito-total-label">
                   Descuento
                 </p>
 
-                {total !== totalConDescuento && (
+                {descuentoTotal > 0 && (
                   <p className="carrito-total-descuento">
-                    ${descuento(total).toFixed(2)}
+                    -${descuentoTotal.toFixed(2)}
                   </p>
 
                 )}

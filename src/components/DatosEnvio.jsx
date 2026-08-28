@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from './Header';
+import { useCarrito } from '../context/useCarrito';
 import '../styles/Carrito.css';
 import '../styles/DatosEnvio.css';
 
 function DatosEnvio() {
 
   const navigate = useNavigate();
+  const { carrito, total, totalArticulos, cargando, error } = useCarrito();
 
   const [datosEnvio, setDatosEnvio] = useState({
     nombre: '',
@@ -60,6 +62,16 @@ function DatosEnvio() {
 
     navigate('/confirmCompra');
   };
+
+  const subtotal = carrito.reduce(
+    (acumulado, { cantidad, producto }) => acumulado + (
+      Number(producto.precio || 0) * cantidad
+    ),
+    0
+  );
+
+  const descuento = Math.max(0, subtotal - total);
+  const dinero = (cantidad) => `$${Number(cantidad || 0).toFixed(2)}`;
 
   return (
     <div className="datos-envio-page">
@@ -138,10 +150,6 @@ function DatosEnvio() {
 
               <div className="checkout-card-header">
 
-                <div className="checkout-section-number">
-                  01
-                </div>
-
                 <div>
                   <h1>
                     Datos de envío
@@ -156,48 +164,6 @@ function DatosEnvio() {
 
 
               <div className="datos-envio-form">
-
-                {/* NOMBRE */}
-
-                <div className="form-group">
-
-                  <label htmlFor="nombre">
-                    Nombre
-                  </label>
-
-                  <input
-                    type="text"
-                    id="nombre"
-                    name="nombre"
-                    value={datosEnvio.nombre}
-                    onChange={manejarCambioEnvio}
-                    placeholder="Ej. Juan"
-                    required
-                  />
-
-                </div>
-
-
-                {/* APELLIDO */}
-
-                <div className="form-group">
-
-                  <label htmlFor="apellido">
-                    Apellido
-                  </label>
-
-                  <input
-                    type="text"
-                    id="apellido"
-                    name="apellido"
-                    value={datosEnvio.apellido}
-                    onChange={manejarCambioEnvio}
-                    placeholder="Ej. Pérez"
-                    required
-                  />
-
-                </div>
-
 
                 {/* DIRECCIÓN */}
 
@@ -295,10 +261,6 @@ function DatosEnvio() {
             <section className="checkout-card">
 
               <div className="checkout-card-header">
-
-                <div className="checkout-section-number">
-                  02
-                </div>
 
                 <div>
                   <h2>
@@ -422,9 +384,6 @@ function DatosEnvio() {
                       </p>
                     </div>
 
-                    <span className="pago-seguro">
-                      🔒 Pago seguro
-                    </span>
 
                   </div>
 
@@ -602,7 +561,7 @@ function DatosEnvio() {
               </span>
 
               <span className="resumen-items">
-                cantidad de productos
+                {totalArticulos} {totalArticulos === 1 ? 'producto' : 'productos'}
               </span>
 
             </div>
@@ -610,54 +569,36 @@ function DatosEnvio() {
 
             <div className="resumen-productos">
 
-              <div className="resumen-producto">
+              {cargando ? (
+                <p>Cargando productos...</p>
+              ) : error ? (
+                <p>{error}</p>
+              ) : carrito.length === 0 ? (
+                <p>Tu carrito está vacío.</p>
+              ) : (
+                carrito.map(({ id, cantidad, producto }) => (
+                  <div className="resumen-producto" key={id}>
 
-                <div className="resumen-producto-imagen">
-                  IMG
-                </div>
+                    <img
+                      src={producto.imagen}
+                      alt={producto.nombre}
+                      className="resumen-producto-imagen"
+                    />
 
-                <div className="resumen-producto-info">
+                    <div className="resumen-producto-info">
+                      <strong>{producto.nombre}</strong>
+                      <span>Cantidad: {cantidad}</span>
+                    </div>
 
-                  <strong>
-                    Producto ejemplo
-                  </strong>
+                    <strong>
+                      {dinero(Number(producto.precio) * cantidad * (
+                        1 - Number(producto.descuento || 0) / 100
+                      ))}
+                    </strong>
 
-                  <span>
-                    Cantidad: por producto
-                  </span>
-
-                </div>
-
-                <strong>
-                  precio
-                </strong>
-
-              </div>
-
-
-              <div className="resumen-producto">
-
-                <div className="resumen-producto-imagen">
-                  IMG
-                </div>
-
-                <div className="resumen-producto-info">
-
-                  <strong>
-                    Otro producto
-                  </strong>
-
-                  <span>
-                    Cantidad: 2
-                  </span>
-
-                </div>
-
-                <strong>
-                  $598.00
-                </strong>
-
-              </div>
+                  </div>
+                ))
+              )}
 
             </div>
 
@@ -670,7 +611,17 @@ function DatosEnvio() {
                 </span>
 
                 <span>
-                  totalcondecuento
+                  {dinero(subtotal)}
+                </span>
+              </div>
+
+              <div>
+                <span>
+                  Descuento
+                </span>
+
+                <span>
+                  -{dinero(descuento)}
                 </span>
               </div>
 
@@ -694,7 +645,7 @@ function DatosEnvio() {
               </span>
 
               <strong>
-                $1,597.00
+                {dinero(total)}
               </strong>
 
             </div>
