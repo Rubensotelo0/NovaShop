@@ -1,6 +1,7 @@
 import { Navigate} from "react-router-dom";
+import {useAuth} from "./AuthContext"
 
-function ProtectedRoute({children}){
+export default function ProtectedRoute({children}){
     const {user,loading} = useAuth();
 /* Primera condicion para verificar si e usuario esta registrado */
     if (loading){

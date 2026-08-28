@@ -1,41 +1,37 @@
 import { useState } from 'react';
 import '../styles/login.css';
 import Header from './Header';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 function Login() {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
-    console.log('Email:', email);
-    console.log('Password:', password);
+    setError('');
+    try {
+      await login(email, password);
+      navigate('/');
+    } catch (err) {
+      setError('Correo o contraseña incorrectos');
+    }
   };
 
   return (
     <div className="login-page">
-
-      {/* HEADER */}
       <Header />
-
-      {/* CONTENIDO DEL LOGIN */}
       <main className="login-container">
-
         <div className="login-card">
-
           <h2>Iniciar Sesion</h2>
 
           <form onSubmit={handleSubmit}>
-
             <div className="form-group">
-
-              <label htmlFor="email">
-                Correo electronico
-              </label>
-
+              <label htmlFor="email">Correo electronico</label>
               <input
                 id="email"
                 type="email"
@@ -44,15 +40,10 @@ function Login() {
                 placeholder="correo@ejemplo.com"
                 required
               />
-
             </div>
 
             <div className="form-group">
-
-              <label htmlFor="password">
-                Contraseña
-              </label>
-
+              <label htmlFor="password">Contraseña</label>
               <input
                 id="password"
                 type="password"
@@ -61,23 +52,16 @@ function Login() {
                 placeholder="********"
                 required
               />
-
             </div>
 
-            <button type="submit">
-              Iniciar Sesion
-            </button>
+            {error && <p className="login-error">{error}</p>}
 
+            <button type="submit">Iniciar Sesion</button>
           </form>
 
-          <Link to={"/registro"}>
-          Registrate
-          </Link>
-
+          <Link to={"/registro"}>Registrate</Link>
         </div>
-
       </main>
-
     </div>
   );
 }

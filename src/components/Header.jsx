@@ -3,6 +3,8 @@ import { useCarrito } from '../context/useCarrito';
 import { useEffect, useRef, useState } from 'react';
 import '../styles/Header.css';
 import { Menu, Moon, Search, ShoppingCart, Sun, UserRound } from 'lucide-react';
+import {useAuth} from './AuthContext'
+
 
 function Header() {
 
@@ -34,6 +36,7 @@ function Header() {
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const usuarioRef = useRef(null);
+  const {user,login, logout } = useAuth();
 
 
   // ==============================
@@ -286,6 +289,7 @@ function Header() {
           {/* ==============================
               USUARIO
           ============================== */}
+          
 
           <div className="usuario-container" ref={usuarioRef}>
 
@@ -296,34 +300,24 @@ function Header() {
             >
               <UserRound size={20} strokeWidth={2} aria-hidden="true" />
             </button>
-
-
-            {usuarioAbierto && (
-
+            {usuarioAbierto &&(
               <div className="usuario-card">
-
-                <h3>
-                  Mi cuenta
-                </h3>
-
-                <p>
-                  Usuario: Manuel
-                </p>
-
-                <button>
-                  Mi perfil
-                </button>
-
-                <button>
-                  Cerrar sesión
-                </button>
-
+                {user ? (
+                  <>
+                  <h3>Mi cuenta</h3>
+                  <p>Usuario: {user.name}</p>
+                   <p>Mi perfil</p>
+                  <button onClick={logout}>Cerrar Sesion</button>
+                  </>
+                ) : (
+                  <>
+                  <h3>Invitado</h3>
+                  <button onClick={() => navigate('/login')}>Iniciar sesion</button>
+                  </>
+                )}
               </div>
-
-            )}
-
-          </div>
-
+              )}
+            </div>
         </div>
 
         <nav className="header-categorias" aria-label="Categorías de productos">

@@ -10,26 +10,36 @@ import Login from './components/Login';
 import DatosEnvio from './components/DatosEnvio';
 import ConfirmarCompra from './components/ConfirmarCompra';
 import Perfil from './components/Perfil';
+import  ProtectRoute from './components/ProtectedRoute';
+import { AuthProvider } from './components/AuthContext';
 
 function App() {
   return (
     <BrowserRouter>
+    <AuthProvider>
       <ProductosProvider>
         <CarritoProvider>
           <PageTransition>
             <Routes>
+
               <Route path="/" element={<HomePage />}/>
-              <Route path="/perfil" element={<Perfil/>}/>
-              <Route path="/datosEnv" element={<DatosEnvio/>}/>
-              <Route path="/confirmCompra" element={<ConfirmarCompra/>}/>
-              <Route path="/productos/:id" element={<DetalleProducto />} />
-              <Route path="/favoritos" element={<Favoritos />} />
-              <Route path="/carrito" element={<Carrito />}/>
-              <Route path="/login" element={<Login />} />
+              <Route path="/perfil" element={
+                <ProtectRoute>
+                  <Perfil/>
+                </ProtectRoute>
+              }/>
+              <Route path="/datosEnv" element={
+                <ProtectRoute><DatosEnvio/></ProtectRoute>}/>
+              <Route path="/confirmCompra" element={<ProtectRoute><ConfirmarCompra/></ProtectRoute>}/>
+              <Route path="/productos/:id" element={<DetalleProducto />}/>
+              <Route path="/favoritos" element={<ProtectRoute><Favoritos/></ProtectRoute>} />
+              <Route path="/carrito" element={<ProtectRoute><Carrito /></ProtectRoute>}/>
+              <Route path="/login" element={<Login/>}/>
             </Routes>
           </PageTransition>
-        </CarritoProvider>  
+        </CarritoProvider>
       </ProductosProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

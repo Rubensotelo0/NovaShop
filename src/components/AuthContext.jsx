@@ -5,7 +5,7 @@ autenticacion entre componentes */
 const AuthContext = createContext(null);
 
 /*User va a ser null cuando nadie ha iniciado sesion */
-function AuthProvider ({children}) { 
+export function AuthProvider ({children}) { 
     /* Children es simplemente lo que va a estar dentro de este componente(App) */
     const[user, setUser] = useState(null);
     const[loading, setLoading]= useState(true);
@@ -30,18 +30,19 @@ function AuthProvider ({children}) {
     setUser(null);
     localStorage.removeItem('user');
 };
+  return(
+  <AuthContext.Provider value= {{user,loading,login, logout}}>
+    {children}
+    </AuthContext.Provider>
+    );
 
+}
 /* useAuth es una funcion que arregla usa el useContext en un componente
 fuera de AuthProvider */
-    function useAuth(){
-        const ctx = useContext(AuthContext);
-        if (!ctx) throw new Error ('useAuth debe usarse dentro de AuthProvider');
-        return ctx;
-    }
+export function useAuth(){
+    const ctx = useContext(AuthContext);
+    if (!ctx) throw new Error ('useAuth debe usarse dentro de AuthProvider');
+      return ctx;
+   }
 
-    return(
-        <AuthContext.Provider value= {{user,loading,login, logout}}>
-            {children}
-        </AuthContext.Provider>
-    );
-}
+
