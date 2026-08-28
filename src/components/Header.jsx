@@ -198,6 +198,7 @@ function Header() {
 
       const volverAlMiPerfil = (event) => {
     event.preventDefault();
+        setUsuarioAbierto(false);
     navigate('/perfil');
     window.scrollTo({
       top: 0,
@@ -205,10 +206,15 @@ function Header() {
     });
   };
 
+    const cerrarSesion = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+
   const irAlTopCategoria = () => {
-    window.scrollTo({
-      top: window.innerHeight * 1.37,
-      behavior: 'smooth'
+    document.getElementById('catalogo')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
     });
   };
 

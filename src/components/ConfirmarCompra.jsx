@@ -3,13 +3,33 @@ import { Link } from 'react-router-dom';
 import Header from './Header';
 import '../styles/ConfirmarCompra.css';
 import '../styles/Carrito.css';
+import { useCarrito } from '../context/useCarrito';
 
 function ConfirmarCompra() {
 
   const [compraConfirmada, setCompraConfirmada] = useState(false);
+  const { carrito, total } = useCarrito();
 
 
   const confirmarCompra = () => {
+    const historialGuardado = localStorage.getItem('historialCompras');
+    const historial = historialGuardado ? JSON.parse(historialGuardado) : [];
+    const compra = {
+      id: `NS-${Date.now()}`,
+      fecha: new Date().toISOString(),
+      total,
+      items: carrito.map((item) => ({
+        nombre: item.producto.nombre,
+        marca: item.producto.marca,
+        cantidad: item.cantidad,
+        precio: item.precioUnitario
+      }))
+    };
+
+    localStorage.setItem(
+      'historialCompras',
+      JSON.stringify([compra, ...historial])
+    );
     setCompraConfirmada(true);
   };
 
@@ -241,6 +261,7 @@ function ConfirmarCompra() {
 
             <Link
               to="/"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="compra-confirmada-boton"
             >
               Volver a la tienda
