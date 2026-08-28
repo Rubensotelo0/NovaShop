@@ -38,40 +38,7 @@
 
 
 
-/* =========================================
-   TÍTULO
-========================================= */
 
-.carrito-label {
-
-  display: inline-block;
-
-  margin: 0 0 1px;
-
-  color: #01162b;
-
-  font-size: 1.4rem;
-
-  font-weight: bold;
-
-  letter-spacing: 2px;
-
-  text-transform: uppercase;
-
-}
-
-
-.carrito-subtitulo {
-
-  margin: 1px 0 0;
-
-  color: #00385a;
-
-  font-size: 0.9rem;
-
-  line-height: 1.5;
-
-}
 
 
 /* =========================================
@@ -538,29 +505,24 @@
    RESUMEN
 ========================================= */
 
+
 .carrito-resumen {
-
   display: grid;
-
-  gap: 24px;
-
+  gap: 20px;
   position: sticky;
-
-  top: 96px;
-
-  padding: 22px;
-
+  top: 110px;
+  padding: 24px;
   background: var(--navy);
-
-  color: #ffffff;
-
+  color: #fff;
   border-radius: var(--radius);
-
-  box-shadow:
-    0 16px 32px rgba(0, 56, 90, 0.16);
-
+  box-shadow: 0 16px 32px rgba(0, 56, 90, 0.16);
 }
 
+.carrito-resumen-titulo {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
 
 /* =========================================
    TOTAL

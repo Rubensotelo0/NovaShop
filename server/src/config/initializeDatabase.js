@@ -3,16 +3,28 @@ import { pool } from './database.js';
 
 const databaseName = process.env.DB_NAME;
 
+const categoriasIniciales = [
+  { id: 1, nombre: 'Laptops', slug: 'laptop' },
+  { id: 2, nombre: 'Teclados', slug: 'teclado' },
+  { id: 3, nombre: 'Ratones', slug: 'raton' },
+  { id: 4, nombre: 'Monitores', slug: 'monitores' },
+  { id: 5, nombre: 'Auriculares', slug: 'auriculares' },
+  { id: 6, nombre: 'Sillas', slug: 'sillas' },
+  { id: 7, nombre: 'Almacenamiento', slug: 'almacenamiento' },
+  { id: 8, nombre: 'Cámaras', slug: 'camaras' },
+  { id: 9, nombre: 'Micrófonos', slug: 'microfonos' }
+];
+
 const productosIniciales = [
-  { id: 1, nombre: 'Laptop Gamer', marca: 'MSI', descripcion: 'Laptop potente para juegos.', precio: 1200.00, descuento: 15, imagen: '/src/assets/Laptop.jpg', stock: 10 },
-  { id: 2, nombre: 'Teclado Mecánico', marca: 'Redragon', descripcion: 'Teclado con luces RGB.', precio: 80.50, descuento: 10, imagen: '/src/assets/Teclado.jpg', stock: 10 },
-  { id: 3, nombre: 'Ratón Inalámbrico', marca: 'Logitech', descripcion: 'Ratón óptico de alta precisión.', precio: 50.00, descuento: 0, imagen: 'https://tse1.mm.bing.net/th/id/OIP.rYxbOR_gpdZxfkeU8tcDQQHaGZ?r=0&rs=1&pid=ImgDetMain&o=7&rm=3', stock: 10 },
-  { id: 4, nombre: 'Monitor 4K', marca: 'LG', descripcion: 'Monitor de alta resolución para diseño gráfico.', precio: 400.00, descuento: 5, imagen: '/src/assets/Monitor.jpg', stock: 10 },
-  { id: 5, nombre: 'Auriculares Gaming', marca: 'HyperX', descripcion: 'Auriculares con sonido envolvente.', precio: 120.00, descuento: 20, imagen: 'https://m.media-amazon.com/images/I/71noSdO0XjL._AC_SX679_.jpg', stock: 10 },
-  { id: 6, nombre: 'Silla Ergonómica', marca: 'Corsair', descripcion: 'Silla cómoda para largas sesiones de trabajo.', precio: 250.00, descuento: 10, imagen: 'https://m.media-amazon.com/images/I/51r-4V9wa+L._AC_SX522_.jpg', stock: 10 },
-  { id: 7, nombre: 'Disco Duro Externo', marca: 'Seagate', descripcion: 'Almacenamiento portátil de gran capacidad.', precio: 100.00, descuento: 0, imagen: 'https://tse3.mm.bing.net/th/id/OIP.UfRg6TExQYx7fSmnvSG6ZwHaE_?r=0&rs=1&pid=ImgDetMain&o=7&rm=3', stock: 10 },
-  { id: 8, nombre: 'Cámara Web HD', marca: 'Logitech', descripcion: 'Cámara para videollamadas y streaming.', precio: 70.00, descuento: 5, imagen: 'https://m.media-amazon.com/images/I/71eGb1FcyiL._AC_SY300_SX300_QL70_ML2_.jpg', stock: 10 },
-  { id: 9, nombre: 'Micrófono USB', marca: 'Blue', descripcion: 'Micrófono de alta calidad para grabación.', precio: 90.00, descuento: 0, imagen: 'https://m.media-amazon.com/images/I/71LlwYACaWL._AC_SY300_SX300_QL70_ML2_.jpg', stock: 10 }
+  { id: 1, nombre: 'Laptop Gamer', marca: 'MSI', categoriaId: 1, descripcion: 'Laptop potente para juegos.', precio: 1200.00, descuento: 15, imagen: '/src/assets/Laptop.jpg', stock: 10 },
+  { id: 2, nombre: 'Teclado Mecánico', marca: 'Redragon', categoriaId: 2, descripcion: 'Teclado con luces RGB.', precio: 80.50, descuento: 10, imagen: '/src/assets/Teclado.jpg', stock: 10 },
+  { id: 3, nombre: 'Ratón Inalámbrico', marca: 'Logitech', categoriaId: 3, descripcion: 'Ratón óptico de alta precisión.', precio: 50.00, descuento: 0, imagen: 'https://tse1.mm.bing.net/th/id/OIP.rYxbOR_gpdZxfkeU8tcDQQHaGZ?r=0&rs=1&pid=ImgDetMain&o=7&rm=3', stock: 10 },
+  { id: 4, nombre: 'Monitor 4K', marca: 'LG', categoriaId: 4, descripcion: 'Monitor de alta resolución para diseño gráfico.', precio: 400.00, descuento: 5, imagen: '/src/assets/Monitor.jpg', stock: 10 },
+  { id: 5, nombre: 'Auriculares Gaming', marca: 'HyperX', categoriaId: 5, descripcion: 'Auriculares con sonido envolvente.', precio: 120.00, descuento: 20, imagen: 'https://m.media-amazon.com/images/I/71noSdO0XjL._AC_SX679_.jpg', stock: 10 },
+  { id: 6, nombre: 'Silla Ergonómica', marca: 'Corsair', categoriaId: 6, descripcion: 'Silla cómoda para largas sesiones de trabajo.', precio: 250.00, descuento: 10, imagen: 'https://m.media-amazon.com/images/I/51r-4V9wa+L._AC_SX522_.jpg', stock: 10 },
+  { id: 7, nombre: 'Disco Duro Externo', marca: 'Seagate', categoriaId: 7, descripcion: 'Almacenamiento portátil de gran capacidad.', precio: 100.00, descuento: 0, imagen: 'https://tse3.mm.bing.net/th/id/OIP.UfRg6TExQYx7fSmnvSG6ZwHaE_?r=0&rs=1&pid=ImgDetMain&o=7&rm=3', stock: 10 },
+  { id: 8, nombre: 'Cámara Web HD', marca: 'Logitech', categoriaId: 8, descripcion: 'Cámara para videollamadas y streaming.', precio: 70.00, descuento: 5, imagen: 'https://m.media-amazon.com/images/I/71eGb1FcyiL._AC_SY300_SX300_QL70_ML2_.jpg', stock: 10 },
+  { id: 9, nombre: 'Micrófono USB', marca: 'Blue', categoriaId: 9, descripcion: 'Micrófono de alta calidad para grabación.', precio: 90.00, descuento: 0, imagen: 'https://m.media-amazon.com/images/I/71LlwYACaWL._AC_SY300_SX300_QL70_ML2_.jpg', stock: 10 }
 ];
 
 async function createDatabase() {
@@ -39,16 +51,24 @@ async function createTables() {
       password VARCHAR(255) NOT NULL,
       creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`,
+    `CREATE TABLE IF NOT EXISTS categorias (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      nombre VARCHAR(100) NOT NULL,
+      slug VARCHAR(100) NOT NULL UNIQUE,
+      creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )`,
     `CREATE TABLE IF NOT EXISTS productos (
       id INT AUTO_INCREMENT PRIMARY KEY,
       nombre VARCHAR(150) NOT NULL,
       marca VARCHAR(100) NOT NULL DEFAULT 'NovaTech',
+      categoria_id INT,
       descripcion TEXT,
       precio DECIMAL(10, 2) NOT NULL,
       descuento DECIMAL(5, 2) NOT NULL DEFAULT 0,
       imagen VARCHAR(500),
       stock INT NOT NULL DEFAULT 0,
-      creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (categoria_id) REFERENCES categorias(id)
     )`,
     `CREATE TABLE IF NOT EXISTS carritos (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -115,7 +135,48 @@ async function createTables() {
     }
   }
 
+  try {
+    await pool.query(`
+      ALTER TABLE productos
+      ADD COLUMN categoria_id INT
+    `);
+  } catch (error) {
+    if (error.code !== 'ER_DUP_FIELDNAME') {
+      throw error;
+    }
+  }
+
+  try {
+    await pool.query(`
+      ALTER TABLE productos
+      ADD CONSTRAINT fk_productos_categoria
+      FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+    `);
+  } catch (error) {
+    if (!['ER_DUP_KEYNAME', 'ER_FK_DUP_NAME', 'ER_CANT_CREATE_TABLE'].includes(error.code)) {
+      throw error;
+    }
+  }
+
+  await sincronizarCategorias();
   await sincronizarProductos();
+}
+
+async function sincronizarCategorias() {
+  for (const categoria of categoriasIniciales) {
+    await pool.query(`
+      INSERT INTO categorias
+        (id, nombre, slug)
+      VALUES (?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        nombre = VALUES(nombre),
+        slug = VALUES(slug)
+    `, [
+      categoria.id,
+      categoria.nombre,
+      categoria.slug
+    ]);
+  }
 }
 
 async function sincronizarProductos() {
@@ -128,11 +189,12 @@ async function sincronizarProductos() {
     for (const producto of productosIniciales) {
       await conexion.query(`
         INSERT INTO productos
-          (id, nombre, marca, descripcion, precio, descuento, imagen, stock)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          (id, nombre, marca, categoria_id, descripcion, precio, descuento, imagen, stock)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
           nombre = VALUES(nombre),
           marca = VALUES(marca),
+          categoria_id = VALUES(categoria_id),
           descripcion = VALUES(descripcion),
           precio = VALUES(precio),
           descuento = VALUES(descuento),
@@ -142,6 +204,7 @@ async function sincronizarProductos() {
         producto.id,
         producto.nombre,
         producto.marca,
+        producto.categoriaId,
         producto.descripcion,
         producto.precio,
         producto.descuento,

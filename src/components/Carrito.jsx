@@ -1,9 +1,17 @@
 import { useCarrito } from '../context/useCarrito';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import '../styles/Carrito.css';
 import Header from './Header';
 
 function Carrito() {
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
 
   const {
     carrito,
@@ -14,6 +22,19 @@ function Carrito() {
     cargando,
     error
   } = useCarrito();
+
+  const totalConDescuento = carrito.reduce(
+    (acumulado, { cantidad, producto }) => {
+      const precio = Number(producto.precio || 0);
+      const descuento = Number(producto.descuento || 0);
+      const precioRebajado = precio * (1 - descuento / 100);
+
+      return acumulado + cantidad * precioRebajado;
+    },
+    0
+  );
+
+  const descuento = (precio) => precio - totalConDescuento;
 
 
   return (
@@ -167,9 +188,12 @@ function Carrito() {
                         Marca: {producto.marca}
                       </p>
 
-                      <p>
-                        {producto.desc}
-                      </p>
+                      {total !== totalConDescuento && (
+                        <p>Ahorras $
+                          {(total - totalConDescuento).toFixed(2)}
+                           por unidad
+                        </p>
+                      )}
 
                       <p className="carrito-item-precio">
                         ${producto.precio.toFixed(2)} por unidad
@@ -252,15 +276,39 @@ function Carrito() {
 
               <div className="carrito-resumen-info">
 
+                <h2 className="carrito-resumen-titulo">
+                  Resumen
+                </h2>
+
                 <p className="carrito-total-label">
-                  Total
+                  Subtotal
                 </p>
 
                 <p className="carrito-total">
                   ${total.toFixed(2)}
                 </p>
 
+                <p className="carrito-total-label">
+                  Descuento
+                </p>
+
+                {total !== totalConDescuento && (
+                  <p className="carrito-total-descuento">
+                    ${descuento(total).toFixed(2)}
+                  </p>
+
+                )}
+
+                <p className="carrito-total-label">
+                  Total
+                </p>
+
+                <p className="carrito-total">
+                  ${totalConDescuento.toFixed(2)}
+                </p>
+
               </div>
+    
 
               <Link
                 to="/datosEnv"

@@ -738,7 +738,7 @@
 }
 
 
-.quantity-control span {
+.quantity-control > span {
 
   min-width: 28px;
 
@@ -815,6 +815,49 @@
    AGREGAR AL CARRITO
 ========================================= */
 
+.comprar-cart {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  width: 100%;
+
+  max-width: 390px;
+
+  margin-bottom: 14px;
+
+  padding: 15px 22px;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  background: #00385a;
+
+  color: #ffffff;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  font-size: 0.95rem;
+
+  font-weight: 800;
+
+  box-shadow:
+    0 8px 22px rgba(0, 56, 90, 0.18);
+
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+
+}
+
 .add-cart {
 
   display: flex;
@@ -837,9 +880,10 @@
 
   border-radius: 12px;
 
-  background: var(--navy);
+  background: #2270a0;
 
   color: #ffffff;
+  text-decoration: none;
 
   cursor: pointer;
 
@@ -857,6 +901,17 @@
 
 }
 
+.comprar-cart:hover {
+
+  background: var(--primary);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 25px rgba(99, 102, 241, 0.25);
+
+}
+
 
 .add-cart:hover {
 
@@ -866,6 +921,22 @@
 
   box-shadow:
     0 12px 25px rgba(99, 102, 241, 0.25);
+
+}
+
+
+.add-cart:disabled, .add-cart:disabled:hover {
+
+  background: #2270a0;
+
+  cursor: not-allowed;
+
+  opacity: 0.5;
+
+  transform: none;
+
+  box-shadow:
+    0 8px 22px rgba(0, 56, 90, 0.18);
 
 }
 
@@ -882,6 +953,12 @@
 ========================================= */
 
 .cart-small {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  transform: translateY(0px);
 
   font-size: 1.05rem;
 
@@ -1308,6 +1385,11 @@
 
   }
 
+  .comprar-cart {
+    
+    max-width: none;
+
+  }
 
   .add-cart {
 

@@ -23,17 +23,65 @@ app.get('/api/db-status', async (_request, response) => {
   }
 });
 
-app.get('/api/productos', async (_request, response) => {
+app.get('/api/categorias', async (_request, response) => {
   try {
-    const [productos] = await pool.query(`
-      SELECT id, nombre, marca, descripcion, precio, descuento, imagen, stock
-      FROM productos
-      ORDER BY id
+    const [categorias] = await pool.query(`
+      SELECT id, nombre, slug
+      FROM categorias
+      ORDER BY nombre
     `);
+
+    response.json(categorias.map((categoria) => ({
+      id: String(categoria.id),
+      nombre: categoria.nombre,
+      slug: categoria.slug
+    })));
+  } catch (error) {
+    console.error('No se pudieron cargar las categorías:', error);
+    response.status(500).json({ message: 'No se pudieron cargar las categorías' });
+  }
+});
+
+app.get('/api/productos', async (request, response) => {
+  try {
+    const termino = request.query.q?.trim() || '';
+    const parametros = [];
+    let filtroBusqueda = '';
+
+    if (termino) {
+      filtroBusqueda = `
+        WHERE p.nombre LIKE ?
+      `;
+      const terminoLike = `%${termino}%`;
+      parametros.push(terminoLike);
+    }
+
+    const [productos] = await pool.query(`
+      SELECT
+        p.id,
+        p.nombre,
+        p.marca,
+        p.descripcion,
+        p.precio,
+        p.descuento,
+        p.imagen,
+        p.stock,
+        c.id AS categoria_id,
+        c.nombre AS categoria_nombre,
+        c.slug AS categoria_slug
+      FROM productos
+      p
+      LEFT JOIN categorias c ON c.id = p.categoria_id
+      ${filtroBusqueda}
+      ORDER BY p.id
+    `, parametros);
 
     response.json(productos.map((producto) => ({
       ...producto,
       id: String(producto.id),
+      categoriaId: producto.categoria_id ? String(producto.categoria_id) : null,
+      categoria: producto.categoria_slug,
+      categoriaNombre: producto.categoria_nombre,
       desc: producto.descripcion,
       precio: Number(producto.precio),
       descuento: Number(producto.descuento || 0)
@@ -78,17 +126,24 @@ async function buildCartResponse(connection = pool) {
       p.precio,
       p.descuento,
       p.imagen,
-      p.stock
+      p.stock,
+      c.id AS categoria_id,
+      c.nombre AS categoria_nombre,
+      c.slug AS categoria_slug
     FROM detalle_carritos dc
     INNER JOIN productos p ON p.id = dc.producto_id
+    LEFT JOIN categorias c ON c.id = p.categoria_id
     WHERE dc.carrito_id = ?
     ORDER BY dc.id
   `, [carritoId]);
 
   const normalizedItems = items.map((item) => {
     const cantidad = Number(item.cantidad);
-    const precioUnitario = Number(item.precio_unitario);
     const precioProducto = Number(item.precio);
+    const descuento = Number(item.descuento || 0);
+    const precioUnitario = Number(
+      (precioProducto * (1 - descuento / 100)).toFixed(2)
+    );
 
     return {
       id: String(item.producto_id),
@@ -99,6 +154,9 @@ async function buildCartResponse(connection = pool) {
         id: String(item.producto_id),
         nombre: item.nombre,
         marca: item.marca,
+        categoriaId: item.categoria_id ? String(item.categoria_id) : null,
+        categoria: item.categoria_slug,
+        categoriaNombre: item.categoria_nombre,
         desc: item.descripcion,
         precio: precioProducto,
         descuento: Number(item.descuento || 0),

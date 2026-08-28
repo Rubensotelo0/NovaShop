@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ProductosContext from './ProductosContext';
 import { getProductos } from '../services/productosService';
+import { getCategorias } from '../services/categoriasService';
 
 export function ProductosProvider({ children }) {
+  const [searchParams] = useSearchParams();
+  const terminoBusqueda = searchParams.get('q') || '';
   const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
 
@@ -12,7 +17,7 @@ export function ProductosProvider({ children }) {
 
     const cargarProductos = async () => {
       try {
-        const productosActualizados = await getProductos();
+        const productosActualizados = await getProductos(terminoBusqueda);
 
         if (activo) {
           setProductos(productosActualizados);
@@ -36,10 +41,34 @@ export function ProductosProvider({ children }) {
       activo = false;
       clearInterval(intervalo);
     };
+  }, [terminoBusqueda]);
+
+  useEffect(() => {
+    let activo = true;
+
+    const cargarCategorias = async () => {
+      try {
+        const categoriasActualizadas = await getCategorias();
+
+        if (activo) {
+          setCategorias(categoriasActualizadas);
+        }
+      } catch (requestError) {
+        if (activo) {
+          setError(requestError.message);
+        }
+      }
+    };
+
+    cargarCategorias();
+
+    return () => {
+      activo = false;
+    };
   }, []);
 
   return (
-    <ProductosContext.Provider value={{ productos, cargando, error }}>
+    <ProductosContext.Provider value={{ productos, categorias, cargando, error }}>
       {children}
     </ProductosContext.Provider>
   );

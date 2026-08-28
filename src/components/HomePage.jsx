@@ -7,25 +7,18 @@ import { useCarrito } from '../context/useCarrito';
 import Hero from './hero.jsx';
 import { useProductos } from '../context/useProductos';
 
-const categoriasPorProducto = {
-  '1': 'laptop',
-  '2': 'teclado',
-  '3': 'raton',
-  '4': 'laptop',
-  '5': 'teclado',
-  '6': 'raton',
-  '7': 'laptop',
-  '8': 'teclado',
-  '9': 'raton'
-};
-
 function HomePage() {
 
   const { carrito } = useCarrito();
-  const { productos, cargando, error } = useProductos();
+  const { productos, categorias, cargando, error } = useProductos();
   const [searchParams] = useSearchParams();
-  const categoriaSeleccionada = searchParams.get('categoria');
+  const categoriaSeleccionada = searchParams.get('categoria') || 'todas';
+  const terminoBusqueda = searchParams.get('q') || '';
+  const busquedaActiva = terminoBusqueda.trim().length > 0;
   const filtroActivo = categoriaSeleccionada && categoriaSeleccionada !== 'todas';
+  const categoriaActual = categorias.find(
+    (categoria) => categoria.slug === categoriaSeleccionada
+  );
   const cantidadCarrito = carrito.reduce(
     (total, item) => total + item.cantidad,
     0
@@ -75,29 +68,28 @@ function HomePage() {
     });
   };
 
-  const productosConCategoria = productos.map((producto) => ({
-    ...producto,
-    categoria: producto.categoria || categoriasPorProducto[String(producto.id)]
-  }));
-
   const productosVisibles = filtroActivo
-    ? productosConCategoria.filter(
+    ? productos.filter(
       (producto) => producto.categoria === categoriaSeleccionada
     )
-    : productosConCategoria;
+    : productos;
+
+  const formatearPrecio = (precio) => `$${precio.toFixed(2)} MXN`;
+  const rutaLimpiarBusqueda = filtroActivo
+    ? `/?categoria=${categoriaSeleccionada}`
+    : '/';
 
   return (
     <div className="tienda">
 
       {<Header/>}
-      <Hero/>
+      {!busquedaActiva && <Hero/>}
 
       {/* CONTENIDO */}
-      <main className="lista-container">
+      <main className={`lista-container ${busquedaActiva ? 'lista-container-busqueda' : ''}`}>
 
-
-
-  <div className="promocion-banner">
+  {!busquedaActiva && (
+    <div className="promocion-banner">
 
     <div className="promocion-imagen">
 
@@ -139,37 +131,143 @@ function HomePage() {
     </div>
 
   </div>
+  )}
 
-  <div id="catalogo" className="catalogo-header">
+  <div id="catalogo" className={`catalogo-header ${busquedaActiva ? 'catalogo-header-busqueda' : ''}`}>
 
   <h2 className="catalogo-label">
-    {filtroActivo ? categoriaSeleccionada.toUpperCase() : 'NUESTRA'} <span>{filtroActivo ? 'CATEGORÍA' : 'COLECCIÓN'}</span>
+    {busquedaActiva
+      ? 'RESULTADOS'
+      : filtroActivo
+        ? categoriaActual?.nombre?.toUpperCase() || categoriaSeleccionada.toUpperCase()
+        : 'NUESTRA'} <span>{busquedaActiva ? 'DE LA BÚSQUEDA' : filtroActivo ? 'CATEGORÍA' : 'COLECCIÓN'}</span>
   </h2>
+
+  {busquedaActiva && (
+    <>
+      <div className="busqueda-etiquetas">
+        <span className="busqueda-pill">
+          Buscando: {terminoBusqueda}
+        </span>
+
+        <Link to={rutaLimpiarBusqueda} className="busqueda-limpiar">
+          Limpiar búsqueda
+        </Link>
+      </div>
+
+      <p className="catalogo-subtitulo">
+        {productosVisibles.length > 0
+          ? `${productosVisibles.length} resultado${productosVisibles.length === 1 ? '' : 's'} para "${terminoBusqueda}"`
+          : `No encontramos resultados para "${terminoBusqueda}"`}
+      </p>
+
+      {filtroActivo && categoriaActual && (
+        <p className="catalogo-subtitulo2">
+          Filtrando dentro de {categoriaActual.nombre}
+        </p>
+      )}
+    </>
+  )}
 
 </div>
 
+        {busquedaActiva ? (
+          <section className="busqueda-panel" aria-label="Resultados de la búsqueda">
+            {cargando && <p className="busqueda-estado">Cargando resultados...</p>}
+            {error && <p className="busqueda-estado">{error}</p>}
 
-        {/* PRODUCTOS */}
-        <div className="productos-grid">
-          {cargando && <p>Cargando productos...</p>}
-          {error && <p>{error}</p>}
-          {!cargando && !error && productosVisibles.map((prod, index) => (
-            <ProductoCard
-              key={prod.id}
-              prod={prod}
-              index={index}
-              favorito={favoritos.includes(prod.id)}
-              onToggleFavorito={toggleFavorito}
-            />
-          ))}
+            {!cargando && !error && productosVisibles.length > 0 && (
+              <div className="busqueda-lista">
+                {productosVisibles.map((producto) => {
+                  const tieneDescuento = producto.descuento > 0;
+                  const precioFinal = tieneDescuento
+                    ? producto.precio * (1 - producto.descuento / 100)
+                    : producto.precio;
 
-          {!cargando && !error && productosVisibles.length === 0 && (
-            <p>No hay productos en esta categoría.</p>
-          )}
+                  return (
+                    <Link
+                      key={producto.id}
+                      to={`/productos/${producto.id}`}
+                      className="busqueda-item"
+                    >
+                      <div className="busqueda-item-imagen">
+                        <img
+                          src={producto.imagen}
+                          alt={producto.nombre}
+                        />
+                      </div>
 
-        </div>
+                      <div className="busqueda-item-contenido">
+                        <p className="busqueda-item-meta">
+                          {producto.categoriaNombre || 'Producto'} · {producto.marca}
+                        </p>
 
-        <div id="catalogo" className="catalogo-header">
+                        <h3>
+                          {producto.nombre}
+                        </h3>
+
+                        <p className="busqueda-item-descripcion">
+                          {producto.desc}
+                        </p>
+
+                        <span className="busqueda-item-cta">
+                          Ver detalle del producto
+                        </span>
+
+                        <div className="busqueda-item-precio">
+                          {tieneDescuento && (
+                            <span className="busqueda-item-descuento">
+                              -{producto.descuento}%
+                            </span>
+                          )}
+
+                          {tieneDescuento && (
+                            <span className="busqueda-item-precio-anterior">
+                              {formatearPrecio(producto.precio)}
+                            </span>
+                          )}
+
+                          <strong>
+                            {formatearPrecio(precioFinal)}
+                          </strong>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+
+            {!cargando && !error && productosVisibles.length === 0 && (
+              <div className="busqueda-vacia">
+                <h3>No encontramos coincidencias</h3>
+                <p>Prueba con otro nombre, una marca o una categoría distinta.</p>
+              </div>
+            )}
+          </section>
+        ) : (
+          <div className="productos-grid">
+            {cargando && <p>Cargando productos...</p>}
+            {error && <p>{error}</p>}
+            {!cargando && !error && productosVisibles.map((prod, index) => (
+              <ProductoCard
+                key={prod.id}
+                prod={prod}
+                index={index}
+                favorito={favoritos.includes(prod.id)}
+                onToggleFavorito={toggleFavorito}
+              />
+            ))}
+
+            {!cargando && !error && productosVisibles.length === 0 && (
+              <p>No hay productos en esta categoría.</p>
+            )}
+
+          </div>
+        )}
+
+        {!busquedaActiva && (
+          <div id="catalogo" className="catalogo-header">
 
   <h2 className="catalogo-label">
     SOBRE <span>NOSOTROS</span>
@@ -185,6 +283,7 @@ function HomePage() {
 
   <div className="catalogo-linea"></div>
 </div>
+        )}
 
       </main>
 

@@ -3,9 +3,8 @@ import { useCarrito } from '../context/useCarrito';
 import { useEffect, useRef, useState } from 'react';
 import '../styles/Header.css';
 import { Menu, Moon, Search, ShoppingCart, Sun, UserRound } from 'lucide-react';
-import {useAuth} from './AuthContext'
-
-
+import { useProductos } from '../context/useProductos';
+import { useAuth } from './AuthContext';
 function Header() {
 
   // ==============================
@@ -13,6 +12,7 @@ function Header() {
   // ==============================
 
   const { carrito } = useCarrito();
+  const { productos, categorias } = useProductos();
 
   const cantidadCarrito = carrito.reduce(
     (total, item) => total + item.cantidad,
@@ -31,12 +31,52 @@ function Header() {
   const [usuarioAbierto, setUsuarioAbierto] = useState(false);
   const [modoOscuro, setModoOscuro] = useState(false);
   const [scrolled, setScrolled] = useState(() => window.scrollY > 0);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const categoriaActiva = searchParams.get('categoria') || 'todas';
+  const terminoBusqueda = searchParams.get('q') || '';
+  const [textoBusqueda, setTextoBusqueda] = useState(terminoBusqueda);
+  const [sugerenciasAbiertas, setSugerenciasAbiertas] = useState(false);
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const usuarioRef = useRef(null);
   const {user,login, logout } = useAuth();
+  const buscadorRef = useRef(null);
+
+  const sugerencias = productos
+    .filter((producto) => {
+      const termino = textoBusqueda.trim().toLowerCase();
+      return termino && producto.nombre.toLowerCase().includes(termino);
+    })
+    .slice(0, 5);
+
+  const formatearPrecio = (precio) => `$${precio.toFixed(2)} MXN`;
+
+  const abrirDetalle = (producto) => {
+    setSugerenciasAbiertas(false);
+    setTextoBusqueda(producto.nombre);
+    navigate(`/productos/${producto.id}`);
+  };
+
+  const buscarProductos = (event) => {
+    event.preventDefault();
+    const productoSeleccionado = sugerencias[0];
+
+    if (productoSeleccionado) {
+      abrirDetalle(productoSeleccionado);
+      return;
+    }
+
+    const nuevosParametros = new URLSearchParams(searchParams);
+    const termino = textoBusqueda.trim();
+
+    if (termino) {
+      nuevosParametros.set('q', termino);
+    } else {
+      nuevosParametros.delete('q');
+    }
+
+    setSearchParams(nuevosParametros);
+  };
 
 
   // ==============================
@@ -86,6 +126,14 @@ function Header() {
       setUsuarioAbierto(false);
     }
 
+    if (
+      sugerenciasAbiertas &&
+      buscadorRef.current &&
+      !buscadorRef.current.contains(event.target)
+    ) {
+      setSugerenciasAbiertas(false);
+    }
+
   };
 
   document.addEventListener(
@@ -100,7 +148,7 @@ function Header() {
     );
   };
 
-}, [menuAbierto, usuarioAbierto]);
+}, [menuAbierto, usuarioAbierto, sugerenciasAbiertas]);
 
 
   // ==============================
@@ -130,9 +178,36 @@ function Header() {
     });
   };
 
+    const volverAlFooter = (event) => {
+    event.preventDefault();
+    navigate('/');
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+  };
+
+      const volverAlFavoritos = (event) => {
+    event.preventDefault();
+    navigate('/favoritos');
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+      const volverAlMiPerfil = (event) => {
+    event.preventDefault();
+    navigate('/perfil');
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   const irAlTopCategoria = () => {
     window.scrollTo({
-      top: 620,
+      top: window.innerHeight * 1.37,
       behavior: 'smooth'
     });
   };
@@ -163,7 +238,7 @@ function Header() {
             aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
             title={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
           >
-            <Menu size={22} strokeWidth={2} aria-hidden="true" />
+            <Menu size={25} strokeWidth={2} aria-hidden="true" />
           </button>
                 
                 {/* ==============================
@@ -176,19 +251,19 @@ function Header() {
 
             <nav>
 
-            <Link to="/">
+            <Link to="/" onClick={volverAlInicio}>
               Inicio
             </Link>
             
-            <Link to="/perfil">
+            <Link to="/perfil" onClick={volverAlMiPerfil}>
               Mi perfil
             </Link>
 
-            <Link to="/favoritos">
+            <Link to="/favoritos" onClick={volverAlFavoritos}>
               Favoritos
             </Link>
 
-            <Link to="/">
+            <Link to="/" onClick={volverAlFooter}>
               Contactanos
             </Link>
 
@@ -203,18 +278,77 @@ function Header() {
             BUSCADOR
         ============================== */}
 
-        <div className="header-buscador">
+        <form className="header-buscador" onSubmit={buscarProductos} ref={buscadorRef}>
 
           <input
             type="text"
-            placeholder="Search"
+            value={textoBusqueda}
+            onChange={(event) => {
+              setTextoBusqueda(event.target.value);
+              setSugerenciasAbiertas(true);
+            }}
+            onFocus={() => setSugerenciasAbiertas(true)}
+            placeholder="Buscar productos"
+            aria-label="Buscar productos"
           />
 
-          <button type="button" aria-label="Buscar" title="Buscar">
-            <Search size={19} strokeWidth={2} aria-hidden="true" />
+          <button type="submit" aria-label="Buscar" title="Buscar">
+            <Search size={25} strokeWidth={2} aria-hidden="true" />
           </button>
 
-        </div>
+          {sugerenciasAbiertas && textoBusqueda.trim() && (
+            <div className="buscador-sugerencias" role="listbox" aria-label="Sugerencias de productos">
+              {sugerencias.length > 0 ? sugerencias.map((producto) => (
+                <button
+                  type="button"
+                  className="buscador-sugerencia"
+                  key={producto.id}
+                  onClick={() => abrirDetalle(producto)}
+                >
+                  <div className="buscador-sugerencia-imagen">
+                    <img
+                      src={producto.imagen}
+                      alt={producto.nombre}
+                    />
+                  </div>
+
+                  <div className="buscador-sugerencia-contenido">
+                    <p className="buscador-sugerencia-meta">
+                      {producto.categoriaNombre || 'Producto'} · {producto.marca}
+                    </p>
+
+                    <strong>{producto.nombre}</strong>
+
+                    <div className="buscador-sugerencia-precio">
+                      {producto.descuento > 0 && (
+                        <>
+                          <span className="buscador-sugerencia-descuento">
+                            -{producto.descuento}%
+                          </span>
+
+                          <small className="buscador-sugerencia-precio-anterior">
+                            {formatearPrecio(producto.precio)}
+                          </small>
+                        </>
+                      )}
+
+                      <span className="buscador-sugerencia-precio-final">
+                        {formatearPrecio(
+                          producto.descuento > 0
+                            ? producto.precio * (1 - producto.descuento / 100)
+                            : producto.precio
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              )) : (
+                <p className="buscador-sin-resultados">No encontramos ese producto.</p>
+              )}
+            </div>
+          )}
+
+        </form>
 
 
         {/* ==============================
@@ -253,9 +387,9 @@ function Header() {
             title={modoOscuro ? 'Modo claro' : 'Modo oscuro'}
           >
             {modoOscuro ? (
-              <Sun size={20} strokeWidth={2} aria-hidden="true" />
+              <Sun size={25} strokeWidth={2} aria-hidden="true" />
             ) : (
-              <Moon size={20} strokeWidth={2} aria-hidden="true" />
+              <Moon size={25} strokeWidth={2} aria-hidden="true" />
             )}
           </button>
 
@@ -274,7 +408,7 @@ function Header() {
           >
 
             <span aria-hidden="true">
-              <ShoppingCart size={21} strokeWidth={2} />
+              <ShoppingCart size={25} strokeWidth={2} />
             </span>
 
             {cantidadCarrito > 0 && (
@@ -298,7 +432,7 @@ function Header() {
               aria-label="Abrir menú de usuario"
               title="Menú de usuario"
             >
-              <UserRound size={20} strokeWidth={2} aria-hidden="true" />
+              <UserRound size={25} strokeWidth={2} aria-hidden="true" />
             </button>
             {usuarioAbierto &&(
               <div className="usuario-card">
@@ -322,33 +456,22 @@ function Header() {
 
         <nav className="header-categorias" aria-label="Categorías de productos">
           <Link
-            className={categoriaActiva === 'todas' ? 'categoria-activa' : ''}
-            to="/?categoria=todas"
+            className={!searchParams.get('categoria') || categoriaActiva === 'todas' ? 'categoria-activa' : ''}
+            to="/"
             onClick={irAlTopCategoria}
           >
             Todas
           </Link>
-          <Link
-            className={categoriaActiva === 'laptop' ? 'categoria-activa' : ''}
-            to="/?categoria=laptop"
-            onClick={irAlTopCategoria}
-          >
-            Laptop
-          </Link>
-          <Link
-            className={categoriaActiva === 'teclado' ? 'categoria-activa' : ''}
-            to="/?categoria=teclado"
-            onClick={irAlTopCategoria}
-          >
-            Teclado
-          </Link>
-          <Link
-            className={categoriaActiva === 'raton' ? 'categoria-activa' : ''}
-            to="/?categoria=raton"
-            onClick={irAlTopCategoria}
-          >
-            Ratón
-          </Link>
+          {categorias.map((categoria) => (
+            <Link
+              key={categoria.id}
+              className={categoriaActiva === categoria.slug ? 'categoria-activa' : ''}
+              to={`/?categoria=${categoria.slug}`}
+              onClick={irAlTopCategoria}
+            >
+              {categoria.nombre}
+            </Link>
+          ))}
         </nav>
 
       </header>
