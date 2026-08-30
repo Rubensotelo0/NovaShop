@@ -12,6 +12,8 @@ import ConfirmarCompra from './components/ConfirmarCompra';
 import Perfil from './components/Perfil';
 import  ProtectRoute from './components/ProtectedRoute';
 import { AuthProvider } from './components/AuthContext';
+import Auth from './components/Auth';
+
 
 function App() {
   return (
@@ -34,7 +36,8 @@ function App() {
               <Route path="/productos/:id" element={<DetalleProducto />}/>
               <Route path="/favoritos" element={<ProtectRoute><Favoritos/></ProtectRoute>} />
               <Route path="/carrito" element={<ProtectRoute><Carrito /></ProtectRoute>}/>
-              <Route path="/login" element={<Login/>}/>
+              <Route path="/login" element={<Auth/>}/>
+              <Route path="/registro" element={<Auth/>}/>
             </Routes>
           </PageTransition>
         </CarritoProvider>
