@@ -442,16 +442,24 @@
 
   display: flex;
 
-  align-items: center;
+  align-items: flex-start;
 
   justify-content: space-between;
 
   gap: 15px;
 
+  padding: 10px 0;
+
+  border-bottom: 1px solid #e6edf1;
+
+}
+
+.compra-ticket-producto:last-child {
+  border-bottom: none;
 }
 
 
-.compra-ticket-producto > div {
+.compra-ticket-producto-info {
 
   display: flex;
 
@@ -460,6 +468,8 @@
   gap: 3px;
 
   min-width: 0;
+
+  flex: 1;
 
 }
 
@@ -481,13 +491,35 @@
 
 }
 
+.compra-ticket-detalle {
+  color: #00385a !important;
+  font-weight: 700;
+}
 
-.compra-ticket-producto > strong {
+.compra-ticket-descuento {
+  color: #0f766e !important;
+  font-weight: 700;
+}
 
+.compra-ticket-producto-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
   flex-shrink: 0;
+}
 
+.compra-ticket-producto-total span {
+  color: #737373;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.compra-ticket-producto-total strong {
   color: #00385a;
-
+  font-size: 0.8rem;
+  font-weight: 800;
 }
 
 

@@ -1,48 +1,86 @@
-import { createContext, useEffect, useState, useContext} from "react";
+import { createContext, useEffect, useState, useContext } from 'react';
+import { apiRequest } from '../services/api';
 
-/* AuthContext es el contexto para compartir informacion de 
-autenticacion entre componentes */
 const AuthContext = createContext(null);
 
-/*User va a ser null cuando nadie ha iniciado sesion */
-export function AuthProvider ({children}) { 
-    /* Children es simplemente lo que va a estar dentro de este componente(App) */
-    const[user, setUser] = useState(null);
-    const[loading, setLoading]= useState(true);
-    useEffect(()=>{
-        const stored = localStorage.getItem('user');
-        if(stored) setUser(JSON.parse(stored));
-            setLoading(false);
-    },[]);
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    /* async sirve para conectar a la base de datos, dejamos preparada
-    la funcion para cunado la conectemos reutilizar la funcion */
-    const login = async (email, password) => {
-    /* Data es un valor demo se tiene que elimnar para la base de datos 
-    nomas es para comprobar que este funcionando bien */
-    const data = { email, name: 'Usuario Demo' };
-     setUser(data);
-     /* Convierte tu objeto de Java a texto */
-    localStorage.setItem('user', JSON.stringify(data));
-};
-    /* Borra el usuario y lo que habia dentro del cajon */
-    const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-};
-  return(
-  <AuthContext.Provider value= {{user,loading,login, logout}}>
-    {children}
-    </AuthContext.Provider>
+  useEffect(() => {
+    const stored = localStorage.getItem('user');
+    if (stored) {
+      setUser(JSON.parse(stored));
+    }
+    setLoading(false);
+  }, []);
+
+  const login = async (email, password) => {
+    const data = await apiRequest(
+      '/login',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      },
+      'Credenciales incorrectas'
     );
 
+    const userData = {
+      id: data.user.id,
+      name: data.user.name || data.user.nombre || 'Usuario',
+      nombre: data.user.nombre || data.user.name || 'Usuario',
+      email: data.user.email
+    };
+
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+    return userData;
+  };
+
+  const register = async ({ nombre, email, password }) => {
+    const data = await apiRequest(
+      '/register',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nombre, email, password })
+      },
+      'No se pudo completar el registro'
+    );
+
+    const userData = {
+      id: data.user.id,
+      name: data.user.name || data.user.nombre || nombre,
+      nombre: data.user.nombre || nombre,
+      email: data.user.email
+    };
+
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+    return userData;
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
-/* useAuth es una funcion que arregla usa el useContext en un componente
-fuera de AuthProvider */
-export function useAuth(){
-    const ctx = useContext(AuthContext);
-    if (!ctx) throw new Error ('useAuth debe usarse dentro de AuthProvider');
-      return ctx;
-   }
+
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth debe usarse dentro de AuthProvider');
+  return ctx;
+}
 
 

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from './Header'
 import '../styles/Perfil.css';
 
@@ -9,10 +9,33 @@ function Perfil() {
   const usuario = usuarioGuardado
     ? JSON.parse(usuarioGuardado)
     : { name: 'Nova Shop', email: 'usuario@novashop.com' };
-  const [historialCompras] = useState(() => {
-    const historialGuardado = localStorage.getItem('historialCompras');
-    return historialGuardado ? JSON.parse(historialGuardado) : [];
-  });
+  const nombreUsuario = usuario.name || usuario.nombre || 'Nova Shop';
+  const [historialCompras, setHistorialCompras] = useState([]);
+
+  useEffect(() => {
+    const cargarHistorial = async () => {
+      const userId = Number(usuario?.id || 0);
+      if (!userId) {
+        setHistorialCompras([]);
+        return;
+      }
+
+      try {
+        const respuesta = await fetch(`/api/perfil/${userId}/pedidos`);
+        if (!respuesta.ok) {
+          setHistorialCompras([]);
+          return;
+        }
+
+        const data = await respuesta.json();
+        setHistorialCompras(Array.isArray(data) ? data : []);
+      } catch (error) {
+        setHistorialCompras([]);
+      }
+    };
+
+    cargarHistorial();
+  }, [usuario?.id]);
 
   const cerrarSesion = () => {
     localStorage.removeItem('user');
@@ -31,12 +54,12 @@ function Perfil() {
 
         <section className="perfil-panel" aria-label="Información del perfil">
           <div className="perfil-avatar" aria-hidden="true">
-            {usuario.name.charAt(0).toUpperCase()}
+            {nombreUsuario.charAt(0).toUpperCase()}
           </div>
 
           <div className="perfil-datos">
             <p className="perfil-datos-etiqueta">INFORMACIÓN PERSONAL</p>
-            <h2>{usuario.name}</h2>
+            <h2>{nombreUsuario}</h2>
             <p>{usuario.email}</p>
 
             <div className="perfil-acciones">

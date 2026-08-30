@@ -207,7 +207,7 @@ function Header() {
   };
 
     const cerrarSesion = () => {
-    localStorage.removeItem('user');
+    logout();
     navigate('/login');
   };
 
@@ -445,9 +445,9 @@ function Header() {
                 {user ? (
                   <>
                   <h3>Mi cuenta</h3>
-                  <p>Usuario: {user.name}</p>
-                   <p>Mi perfil</p>
-                  <button onClick={logout}>Cerrar Sesion</button>
+                  <p>Usuario: {user.name || user.nombre || 'Cliente'}</p>
+                  <p>Mi perfil</p>
+                  <button onClick={cerrarSesion}>Cerrar Sesion</button>
                   </>
                 ) : (
                   <>

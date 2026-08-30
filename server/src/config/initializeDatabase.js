@@ -15,6 +15,10 @@ const categoriasIniciales = [
   { id: 9, nombre: 'Micrófonos', slug: 'microfonos' }
 ];
 
+const usuariosIniciales = [
+  { id: 1, nombre: 'Administrador', email: 'admin@novashop.com', password: 'admin123' }
+];
+
 const productosIniciales = [
   { id: 1, nombre: 'Laptop Gamer', marca: 'MSI', categoriaId: 1, descripcion: 'Laptop potente para juegos.', precio: 1200.00, descuento: 15, imagen: '/src/assets/Laptop.jpg', stock: 10 },
   { id: 2, nombre: 'Teclado Mecánico', marca: 'Redragon', categoriaId: 2, descripcion: 'Teclado con luces RGB.', precio: 80.50, descuento: 10, imagen: '/src/assets/Teclado.jpg', stock: 10 },
@@ -159,6 +163,7 @@ async function createTables() {
   }
 
   await sincronizarCategorias();
+  await sincronizarUsuarios();
   await sincronizarProductos();
 }
 
@@ -175,6 +180,25 @@ async function sincronizarCategorias() {
       categoria.id,
       categoria.nombre,
       categoria.slug
+    ]);
+  }
+}
+
+async function sincronizarUsuarios() {
+  for (const usuario of usuariosIniciales) {
+    await pool.query(`
+      INSERT INTO usuarios
+        (id, nombre, email, password)
+      VALUES (?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        nombre = VALUES(nombre),
+        email = VALUES(email),
+        password = VALUES(password)
+    `, [
+      usuario.id,
+      usuario.nombre,
+      usuario.email,
+      usuario.password
     ]);
   }
 }

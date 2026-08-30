@@ -7,6 +7,7 @@ import Carrito from './components/Carrito';
 import { CarritoProvider } from './context/CarritoProvider';
 import { ProductosProvider } from './context/ProductosProvider';
 import Login from './components/Login';
+import Registro from './components/Registro';
 import DatosEnvio from './components/DatosEnvio';
 import Perfil from './components/Perfil';
 import  ProtectRoute from './components/ProtectedRoute';
@@ -33,6 +34,7 @@ function App() {
               <Route path="/favoritos" element={<ProtectRoute><Favoritos/></ProtectRoute>} />
               <Route path="/carrito" element={<ProtectRoute><Carrito /></ProtectRoute>}/>
               <Route path="/login" element={<Login/>}/>
+              <Route path="/registro" element={<Registro/>}/>
             </Routes>
           </PageTransition>
         </CarritoProvider>

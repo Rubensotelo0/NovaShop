@@ -18,20 +18,24 @@ function Login() {
       await login(email, password);
       navigate('/');
     } catch (err) {
-      setError('Correo o contraseña incorrectos');
+      setError(err.message || 'Correo o contraseña incorrectos');
     }
   };
 
   return (
-    <div className="login-page">
+    <div className="auth-page">
       <Header />
-      <main className="login-container">
-        <div className="login-card">
-          <h2>Iniciar Sesion</h2>
 
-          <form onSubmit={handleSubmit}>
+      <main className="auth-shell single-auth-shell">
+        <section className="auth-card auth-card--single">
+          <div className="auth-card-header">
+            <p className="auth-kicker">Iniciar sesión</p>
+            <h2>Bienvenido de nuevo</h2>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form">
             <div className="form-group">
-              <label htmlFor="email">Correo electronico</label>
+              <label htmlFor="email">Correo electrónico</label>
               <input
                 id="email"
                 type="email"
@@ -54,13 +58,15 @@ function Login() {
               />
             </div>
 
-            {error && <p className="login-error">{error}</p>}
+            {error && <p className="auth-error">{error}</p>}
 
-            <button type="submit">Iniciar Sesion</button>
+            <button type="submit" className="auth-button">Iniciar sesión</button>
           </form>
 
-          <Link to={"/registro"}>Registrate</Link>
-        </div>
+          <p className="auth-footer">
+            ¿No tienes cuenta? <Link to="/registro">Regístrate</Link>
+          </p>
+        </section>
       </main>
     </div>
   );

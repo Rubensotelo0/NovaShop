@@ -5,10 +5,11 @@ import '../styles/ConfirmarCompra.css';
 
 function ConfirmarCompra({ onCancelar }) {
 
-  const { carrito, total } = useCarrito();
+  const { carrito, total, recargarCarrito } = useCarrito();
 
   const [compraConfirmada, setCompraConfirmada] = useState(false);
   const [numeroCompra, setNumeroCompra] = useState('');
+  const [resumenCompra, setResumenCompra] = useState(null);
   useEffect(() => {
   document.body.style.overflow = 'hidden';
 
@@ -16,36 +17,74 @@ function ConfirmarCompra({ onCancelar }) {
     document.body.style.overflow = '';
   };
   }, []);
-  const confirmarCompra = () => {
+  const confirmarCompra = async () => {
+    try {
+      const usuarioGuardado = JSON.parse(localStorage.getItem('user') || 'null');
 
-    const idCompra = `NS-${Date.now()}`;
+      if (!usuarioGuardado?.id) {
+        window.alert('Debes iniciar sesión para completar la compra');
+        return;
+      }
 
-    const historialGuardado = localStorage.getItem('historialCompras');
+      const userId = Number(usuarioGuardado.id);
 
-    const historial = historialGuardado
-      ? JSON.parse(historialGuardado)
-      : [];
+      const respuesta = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId })
+      });
 
-    const compra = {
-      id: idCompra,
-      fecha: new Date().toISOString(),
-      total,
-      items: carrito.map((item) => ({
-        id: item.id,
-        nombre: item.producto.nombre,
-        marca: item.producto.marca,
-        cantidad: item.cantidad,
-        precio: item.producto.precio
-      }))
-    };
+      const data = await respuesta.json();
 
-    localStorage.setItem(
-      'historialCompras',
-      JSON.stringify([compra, ...historial])
-    );
+      if (!respuesta.ok) {
+        throw new Error(data?.message || 'No se pudo completar la compra');
+      }
 
-    setNumeroCompra(idCompra);
-    setCompraConfirmada(true);
+      const idCompra = `NS-${data.pedidoId}`;
+      const compraActual = carrito.map((item) => {
+        const precioBase = Number(item.producto.precio || 0);
+        const descuento = Number(item.producto.descuento || 0);
+        const precioConDescuento = precioBase * (1 - descuento / 100);
+
+        return {
+          id: item.id,
+          nombre: item.producto.nombre,
+          marca: item.producto.marca,
+          cantidad: item.cantidad,
+          precio: Number(precioConDescuento.toFixed(2)),
+          descuento,
+          subtotal: Number((precioConDescuento * item.cantidad).toFixed(2))
+        };
+      });
+
+      const historialGuardado = localStorage.getItem('historialCompras');
+      const historial = historialGuardado ? JSON.parse(historialGuardado) : [];
+
+      const compra = {
+        id: idCompra,
+        fecha: new Date().toISOString(),
+        total: Number(data.total || total),
+        items: compraActual
+      };
+
+      localStorage.setItem(
+        'historialCompras',
+        JSON.stringify([compra, ...historial])
+      );
+
+      setNumeroCompra(idCompra);
+      setResumenCompra({
+        numero: idCompra,
+        total: Number(data.total || total),
+        items: compraActual
+      });
+      setCompraConfirmada(true);
+      await recargarCarrito();
+    } catch (error) {
+      window.alert(error.message || 'No se pudo completar la compra');
+    }
   };
 
 
@@ -122,32 +161,52 @@ function ConfirmarCompra({ onCancelar }) {
 
             <div className="compra-ticket-productos">
 
-              {carrito.map((item) => (
+              {(resumenCompra?.items || carrito).map((item) => {
+                const nombre = item.producto ? item.producto.nombre : item.nombre;
+                const marca = item.producto ? item.producto.marca : item.marca;
+                const cantidad = item.cantidad;
+                const descuento = item.producto
+                  ? Number(item.producto.descuento || 0)
+                  : Number(item.descuento || 0);
+                const precioUnitario = item.producto
+                  ? Number(item.producto.precio || 0) * (1 - (descuento / 100))
+                  : Number(item.precio || 0);
+                const subtotal = item.producto
+                  ? Number((precioUnitario * cantidad).toFixed(2))
+                  : Number(item.subtotal || 0);
 
-                <div
-                  className="compra-ticket-producto"
-                  key={item.id}
-                >
+                return (
+                  <div
+                    className="compra-ticket-producto"
+                    key={item.id}
+                  >
+                    <div className="compra-ticket-producto-info">
+                      <strong>
+                        {nombre}
+                      </strong>
 
-                  <div>
+                      <span>
+                        {marca}
+                      </span>
 
-                    <strong>
-                      {item.producto.nombre}
-                    </strong>
+                      <span className="compra-ticket-detalle">
+                        {cantidad} × ${Number(precioUnitario).toFixed(2)}
+                      </span>
 
-                    <span>
-                      {item.producto.marca} × {item.cantidad}
-                    </span>
+                      <span className="compra-ticket-descuento">
+                        Descuento: -{Number(descuento).toFixed(2)}%
+                      </span>
+                    </div>
 
+                    <div className="compra-ticket-producto-total">
+                      <span>Subtotal</span>
+                      <strong>
+                        ${Number(subtotal).toFixed(2)}
+                      </strong>
+                    </div>
                   </div>
-
-                  <strong>
-                    ${(item.producto.precio * item.cantidad).toFixed(2)}
-                  </strong>
-
-                </div>
-
-              ))}
+                );
+              })}
 
             </div>
 
@@ -161,7 +220,7 @@ function ConfirmarCompra({ onCancelar }) {
               </span>
 
               <strong>
-                ${total.toFixed(2)}
+                ${Number(resumenCompra?.total ?? total).toFixed(2)}
               </strong>
 
             </div>

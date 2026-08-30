@@ -1,8 +1,10 @@
 :root {
   --auth-navy: #00385a;
   --auth-blue: #1d4ed8;
+  --auth-blue-soft: #e8f1ff;
   --auth-primary: #2563eb;
   --auth-primary-dark: #1d4ed8;
+  --auth-accent: #f59e0b;
   --auth-text: #111827;
   --auth-muted: #6b7280;
   --auth-border: #e5e7eb;
@@ -29,14 +31,73 @@
   gap: 36px;
 }
 
-.single-auth-shell {
-  display: flex;
-  justify-content: center;
+.auth-visual {
+  background: linear-gradient(135deg, rgba(0, 56, 90, 0.96), rgba(37, 99, 235, 0.88));
+  border-radius: 28px;
+  padding: 52px 40px;
+  color: white;
+  box-shadow: 0 24px 60px rgba(0, 56, 90, 0.25);
+}
+
+.auth-badge {
+  display: inline-flex;
   align-items: center;
-  width: 100%;
-  min-height: calc(100vh - 72px);
-  padding-top: 24px;
-  padding-bottom: 24px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.auth-visual h1 {
+  margin: 18px 0 16px;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.06em;
+  color: white;
+}
+
+.auth-visual p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 500px;
+}
+
+.auth-visual ul {
+  list-style: none;
+  display: grid;
+  gap: 14px;
+  margin: 26px 0 0;
+  padding: 0;
+}
+
+.auth-visual li {
+  position: relative;
+  padding-left: 30px;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+}
+
+.auth-visual li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .auth-card {
@@ -45,11 +106,6 @@
   border-radius: 26px;
   padding: 32px 28px;
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
-}
-
-.auth-card--single {
-  width: min(100%, 520px);
-  margin: 0 auto;
 }
 
 .auth-card-header {
@@ -126,6 +182,11 @@
 .auth-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 16px 25px rgba(37, 99, 235, 0.28);
+}
+
+.auth-button:disabled {
+  opacity: 0.8;
+  cursor: wait;
 }
 
 .auth-error {
