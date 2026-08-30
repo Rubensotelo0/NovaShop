@@ -4,12 +4,16 @@ import Header from './Header';
 import { useCarrito } from '../context/useCarrito';
 import '../styles/Carrito.css';
 import '../styles/DatosEnvio.css';
+import ConfirmarCompra from './ConfirmarCompra';
+import { CreditCard } from 'lucide-react';
 
 function DatosEnvio() {
 
   const navigate = useNavigate();
   const { carrito, total, totalArticulos, cargando, error } = useCarrito();
 
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  
   const [datosEnvio, setDatosEnvio] = useState({
     nombre: '',
     apellido: '',
@@ -299,7 +303,7 @@ function DatosEnvio() {
                   />
 
                   <div className="metodo-pago-icon">
-                    icono tarj
+                    <CreditCard size={25} strokeWidth={2} />
                   </div>
 
                   <div className="metodo-pago-info">
@@ -671,27 +675,24 @@ function DatosEnvio() {
 
 
           <button
-            type="submit"
-            form=""
+            type="button"
             className="datos-envio-continuar"
-            onClick={() => {
-              const form = document.querySelector(
-                '.datos-envio-layout'
-              );
-
-              if (form) {
-                form.requestSubmit();
-              }
-            }}
+            onClick={() => setMostrarConfirmacion(true)}
           >
-            Continuar
+            Confirmar
           </button>
 
         </div>
 
       </main>
-
+      {mostrarConfirmacion && (
+        <ConfirmarCompra
+        onCancelar={() => setMostrarConfirmacion(false)}
+        />
+      )}
+    
     </div>
+    
   );
 }
 

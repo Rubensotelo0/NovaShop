@@ -1,28 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Header from './Header';
-import '../styles/ConfirmarCompra.css';
-import '../styles/Carrito.css';
 import { useCarrito } from '../context/useCarrito';
+import '../styles/ConfirmarCompra.css';
 
-function ConfirmarCompra() {
+function ConfirmarCompra({ onCancelar }) {
 
-  const [compraConfirmada, setCompraConfirmada] = useState(false);
   const { carrito, total } = useCarrito();
 
+  const [compraConfirmada, setCompraConfirmada] = useState(false);
+  const [numeroCompra, setNumeroCompra] = useState('');
+  useEffect(() => {
+  document.body.style.overflow = 'hidden';
 
+  return () => {
+    document.body.style.overflow = '';
+  };
+  }, []);
   const confirmarCompra = () => {
+
+    const idCompra = `NS-${Date.now()}`;
+
     const historialGuardado = localStorage.getItem('historialCompras');
-    const historial = historialGuardado ? JSON.parse(historialGuardado) : [];
+
+    const historial = historialGuardado
+      ? JSON.parse(historialGuardado)
+      : [];
+
     const compra = {
-      id: `NS-${Date.now()}`,
+      id: idCompra,
       fecha: new Date().toISOString(),
       total,
       items: carrito.map((item) => ({
+        id: item.id,
         nombre: item.producto.nombre,
         marca: item.producto.marca,
         cantidad: item.cantidad,
-        precio: item.precioUnitario
+        precio: item.producto.precio
       }))
     };
 
@@ -30,250 +43,233 @@ function ConfirmarCompra() {
       'historialCompras',
       JSON.stringify([compra, ...historial])
     );
+
+    setNumeroCompra(idCompra);
     setCompraConfirmada(true);
   };
 
 
+  /*
+   * =========================================
+   * POPUP DE COMPRA CONFIRMADA
+   * =========================================
+   */
+
+  if (compraConfirmada) {
+
+    return (
+
+      <div
+        className="compra-confirmada-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="compra-confirmada-titulo"
+      >
+
+        <div className="compra-confirmada-modal">
+
+          {/* ICONO */}
+
+          <div className="compra-confirmada-icon">
+            ✓
+          </div>
+
+
+          {/* TÍTULO */}
+
+          <h2 id="compra-confirmada-titulo">
+            ¡Compra confirmada!
+          </h2>
+
+          <p className="compra-confirmada-mensaje">
+            Tu compra se realizó correctamente.
+          </p>
+
+
+          {/* =========================================
+              TICKET
+          ========================================= */}
+
+          <div className="compra-ticket">
+
+            <div className="compra-ticket-header">
+
+              <span>
+                NovaShop
+              </span>
+
+              <small>
+                Ticket de compra
+              </small>
+
+            </div>
+
+
+            <div className="compra-ticket-numero">
+
+              <span>
+                Número de compra
+              </span>
+
+              <strong>
+                {numeroCompra}
+              </strong>
+
+            </div>
+
+
+            {/* PRODUCTOS */}
+
+            <div className="compra-ticket-productos">
+
+              {carrito.map((item) => (
+
+                <div
+                  className="compra-ticket-producto"
+                  key={item.id}
+                >
+
+                  <div>
+
+                    <strong>
+                      {item.producto.nombre}
+                    </strong>
+
+                    <span>
+                      {item.producto.marca} × {item.cantidad}
+                    </span>
+
+                  </div>
+
+                  <strong>
+                    ${(item.producto.precio * item.cantidad).toFixed(2)}
+                  </strong>
+
+                </div>
+
+              ))}
+
+            </div>
+
+
+            {/* TOTAL */}
+
+            <div className="compra-ticket-total">
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                ${total.toFixed(2)}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <p className="compra-confirmada-gracias">
+            Gracias por comprar con nosotros.
+          </p>
+
+
+          {/* BOTÓN */}
+
+          <Link
+            to="/"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="compra-confirmada-boton"
+          >
+            Volver a la tienda
+          </Link>
+
+        </div>
+
+      </div>
+
+    );
+  }
+
+
+  /*
+   * =========================================
+   * POPUP DE CONFIRMACIÓN
+   * =========================================
+   */
+
   return (
 
-    <div className="confirmar-compra-page">
+    <div
+      className="confirmar-compra-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirmar-compra-titulo"
+    >
 
-      {/* HEADER PRINCIPAL */}
-      <Header />
+      <div className="confirmar-compra-modal">
 
+        {/* ICONO */}
 
-      {/* CONTENIDO PRINCIPAL */}
-      <main className="confirmar-compra-shell">
-
-
-        {/* =========================================
-            PROGRESO DE COMPRA
-        ========================================= */}
-
-        <div
-          className="checkout-progress"
-          aria-label="Progreso de compra"
-        >
+        <div className="confirmar-compra-icon">
+          ?
+        </div>
 
 
-          {/* PASO 1 */}
+        {/* TÍTULO */}
 
-          <div className="checkout-step checkout-step-completed">
-
-            <span className="checkout-step-circle">
-              ✓
-            </span>
-
-            <span className="checkout-step-label">
-              Carrito
-            </span>
-
-          </div>
+        <h2 id="confirmar-compra-titulo">
+          ¿Confirmar compra?
+        </h2>
 
 
-          <div className="checkout-progress-line checkout-progress-line-active" />
+        <p className="confirmar-compra-mensaje">
+          ¿Estás seguro de que deseas realizar esta compra?
+        </p>
 
 
-          {/* PASO 2 */}
+        {/* TOTAL */}
 
-          <div className="checkout-step checkout-step-completed">
+        <div className="confirmar-compra-total">
 
-            <span className="checkout-step-circle">
-              ✓
-            </span>
+          <span>
+            Total de compra
+          </span>
 
-            <span className="checkout-step-label">
-              Datos de envío
-            </span>
-
-          </div>
-
-
-          <div className="checkout-progress-line checkout-progress-line-active" />
-
-
-          {/* PASO 3 */}
-
-          <div className="checkout-step checkout-step-active">
-
-            <span className="checkout-step-circle">
-              3
-            </span>
-
-            <span className="checkout-step-label">
-              Comprar
-            </span>
-
-          </div>
+          <strong>
+            ${total.toFixed(2)}
+          </strong>
 
         </div>
 
 
-        {/* =========================================
-            CONTENIDO DE CONFIRMACIÓN
-        ========================================= */}
+        {/* BOTONES */}
 
-        <section className="confirmar-compra-contenido">
+        <div className="confirmar-compra-acciones">
 
-
-          {/* ENCABEZADO */}
-
-          <div className="confirmar-compra-header">
-
-            <h1>
-              Confirmar compra
-            </h1>
-
-            <p>
-              Revisa que toda la información sea correcta antes de confirmar tu pedido.
-            </p>
-
-          </div>
+          <button
+            type="button"
+            className="confirmar-compra-cancelar"
+            onClick={onCancelar}
+          >
+            Cancelar
+          </button>
 
 
-          {/* =========================================
-              RESUMEN
-          ========================================= */}
-
-          <div className="confirmar-compra-resumen">
-
-
-            {/* ESTADO */}
-
-            <div className="confirmar-compra-resumen-item">
-
-              <span>
-                Estado del pedido
-              </span>
-
-              <strong>
-                Listo para comprar
-              </strong>
-
-            </div>
-
-
-            {/* MÉTODO DE PAGO */}
-
-            <div className="confirmar-compra-resumen-item">
-
-              <span>
-                Método de pago
-              </span>
-
-              <strong>
-                Pago seleccionado
-              </strong>
-
-            </div>
-
-
-            {/* ENVÍO */}
-
-            <div className="confirmar-compra-resumen-item">
-
-              <span>
-                Envío
-              </span>
-
-              <strong>
-                Dirección registrada
-              </strong>
-
-            </div>
-
-          </div>
-
-
-          {/* =========================================
-              BOTONES
-          ========================================= */}
-
-          <div className="confirmar-compra-acciones">
-
-
-            {/* VOLVER */}
-
-            <Link
-              to="/datosEnv"
-              className="confirmar-compra-volver"
-            >
-              Volver
-            </Link>
-
-
-            {/* CONFIRMAR */}
-
-            <button
-              type="button"
-              className="confirmar-compra-boton"
-              onClick={confirmarCompra}
-            >
-              Confirmar compra
-            </button>
-
-          </div>
-
-        </section>
-
-      </main>
-
-
-      {/* =========================================
-          POPUP DE COMPRA CONFIRMADA
-      ========================================= */}
-
-      {compraConfirmada && (
-
-        <div
-          className="compra-confirmada-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="compra-confirmada-titulo"
-        >
-
-          <div className="compra-confirmada-modal">
-
-
-            {/* ICONO DE CONFIRMACIÓN */}
-
-            <div className="compra-confirmada-icon">
-              ✓
-            </div>
-
-
-            {/* MENSAJE */}
-
-            <h2 id="compra-confirmada-titulo">
-              ¡Compra confirmada!
-            </h2>
-
-            <p>
-              Tu compra se realizó correctamente.
-            </p>
-
-            <p>
-              Gracias por comprar con nosotros.
-            </p>
-
-
-            {/* VOLVER A LA TIENDA */}
-
-            <Link
-              to="/"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="compra-confirmada-boton"
-            >
-              Volver a la tienda
-            </Link>
-
-          </div>
+          <button
+            type="button"
+            className="confirmar-compra-confirmar"
+            onClick={confirmarCompra}
+          >
+            Sí, comprar
+          </button>
 
         </div>
 
-      )}
+      </div>
 
     </div>
+
   );
 }
 
