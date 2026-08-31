@@ -12,17 +12,17 @@ function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorLogin, setErrorLogin] = useState('');
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
     setErrorLogin('');
     try {
-      await login(email, password);
+      await login(email,password);
       navigate('/');
     } catch (err) {
-      setErrorLogin('Correo o contraseña incorrectos');
+      setErrorLogin(err.message);
     }
   };
 
@@ -38,11 +38,11 @@ function Auth() {
     setErrorRegistro('');
     setCargandoRegistro(true);
     try {
-
-      console.log('Registro (pendiente de backend):', { nombre, emailRegistro, passwordRegistro });
-    } catch (err) {
-      setErrorRegistro('No se pudo completar el registro');
-    } finally {
+      await register({ nombre, email: emailRegistro, password: passwordRegistro });
+      navigate('/');
+    }catch(err) {
+      setErrorRegistro(err.message);
+    } finally{
       setCargandoRegistro(false);
     }
   };
@@ -61,7 +61,7 @@ function Auth() {
 
           <div className="auth-input-group">
             <input type="email" value={emailRegistro} onChange={(e) => setEmailRegistro(e.target.value)} placeholder="Correo electrónico" required />
-            <Mail size={18} />
+            <Mail size={18} ></Mail>/
           </div>
 
           <div className="auth-input-group">
@@ -81,6 +81,9 @@ function Auth() {
               Inicia sesión
             </button>
           </p>
+          <button type="button" className="auth-guest" onClick={() => navigate('/')}>
+            Continuar como invitado
+          </button>
         </form>
       </div>
 
@@ -108,6 +111,9 @@ function Auth() {
               Regístrate
             </button>
           </p>
+                  <button type="button" className="auth-guest" onClick={() => navigate('/')}>
+          Continuar como invitado
+        </button>
         </form>
       </div>
 

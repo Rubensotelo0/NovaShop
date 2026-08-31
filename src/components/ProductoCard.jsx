@@ -2,9 +2,13 @@ import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useCarrito } from '../context/useCarrito';
 import { ShoppingCart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
 function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
   const { agregarAlCarrito, carrito } = useCarrito();
+  const {user} = useAuth();
+  const navigate = useNavigate();
 
   const itemEnCarrito = carrito.find(
     (item) => String(item.id) === String(prod.id)
@@ -70,13 +74,19 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
         <button
           className={`btn-favorito ${
             favorito ? 'activo' : ''
-          }`}
+          }${!user ? 'btn-invitado':''}`}
           aria-label={
             favorito
               ? 'Quitar de favoritos'
               : 'Agregar a favoritos'
           }
-          onClick={() => onToggleFavorito(prod.id)}
+          onClick={() => {
+            if(!user){
+              navigate('/login');
+              return;
+            }
+            onToggleFavorito(prod.id)
+          }}
         >
           <svg
             className="corazon"
@@ -158,8 +168,15 @@ function ProductoCard({ prod, index, favorito, onToggleFavorito }) {
           <button
             className={`btn-agregar-carrito ${
               animandoCarrito ? 'agregado' : ''
-            }`}
-            onClick={() => agregarAlCarrito(prod)}
+            }${!user ? 'btn-invitado' :  ''}`}
+            onClick={() =>{
+              if (!user){
+                navigate('/login')
+                return;
+              }
+              agregarAlCarrito(prod)
+            }
+            }
             disabled={sinStock}
             aria-label={
               sinStock

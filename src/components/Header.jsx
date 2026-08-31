@@ -463,8 +463,8 @@ function Header() {
                   <>
                   <h3>Mi cuenta</h3>
                   <p>Usuario: {user.name || user.nombre || 'Cliente'}</p>
-                  <p>Mi perfil</p>
-                  <button onClick={cerrarSesion}>Cerrar Sesion</button>
+                  <button onClick={() => navigate('/perfil')}>Mi perfil</button>
+                  <button onClick={() => { logout(); navigate('/'); }}>Cerrar Sesion</button>
                   </>
                 ) : (
                   <>

@@ -1,10 +1,11 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
 import '../styles/DetalleProducto.css';
 import Header from './Header';
 import { useCarrito } from '../context/useCarrito';
 import { useProductos } from '../context/useProductos';
+import { useAuth } from './AuthContext';
 
 function DetalleProducto() {
   const {id} =useParams();
@@ -16,7 +17,9 @@ function DetalleProducto() {
   const productoSiguiente = productos[indiceActual+1];
   const [cantidad, setCantidad] = useState(1);
   const {agregarAlCarrito, carrito, error: errorCarrito} = useCarrito();
-
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
   const itemEnCarrito = carrito.find((item) => String(item.id) === String(producto?.id));
   const cantidadEnCarrito = itemEnCarrito?.cantidad || 0;
   const stockDisponible = producto
@@ -201,8 +204,13 @@ function DetalleProducto() {
           </Link>
 
           <button
-            className="add-cart"
-            onClick={() => agregarAlCarrito(producto, cantidad)}
+            className={`add-cart ${!user ? 'btn-invitado' : ''}`}
+            onClick={() => {
+              if(!user){
+              navigate('/login');
+              return;
+            }agregarAlCarrito(producto, cantidad)
+          }}
             disabled={stockDisponible === 0}
             aria-label="Añadir al carrito"
           >
