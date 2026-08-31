@@ -1410,7 +1410,7 @@ body {
   font-size: 0.85rem;
 }
 
-.footer-tienda div {
+.footer-tienda > div {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -1419,6 +1419,39 @@ body {
 .footer-tienda strong {
   color: white;
   font-size: 1rem;
+}
+
+.footer-redes {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.footer-red-social {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.footer-red-social svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.footer-red-social:hover {
+  background: white;
+  color: #00385a;
+  transform: translateY(-1px);
 }
 
 .footer-tienda {

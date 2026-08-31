@@ -178,6 +178,18 @@ function Header() {
     });
   };
 
+      const volverAlSobreNosotros = (event) => {
+    event.preventDefault();
+    navigate('/');
+
+    requestAnimationFrame(() => {
+      document.getElementById('sobre-nosotros')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    });
+  };
+
     const volverAlFooter = (event) => {
     event.preventDefault();
     navigate('/');
@@ -269,6 +281,10 @@ function Header() {
               Favoritos
             </Link>
 
+            <Link to="/sobre-nosotros" onClick={volverAlSobreNosotros}>
+              Sobre Nosotros
+            </Link>
+
             <Link to="/" onClick={volverAlFooter}>
               Contactanos
             </Link>
@@ -324,6 +340,7 @@ function Header() {
                     </p>
 
                     <strong>{producto.nombre}</strong>
+                    
 
                     <div className="buscador-sugerencia-precio">
                       {producto.descuento > 0 && (
