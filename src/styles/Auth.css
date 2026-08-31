@@ -155,7 +155,8 @@
   padding: 12px 40px 12px 14px;
   border: 1px solid rgba(0, 56, 90, 0.2);
   border-radius: 10px;
-  background: white;
+  background: rgba(255, 255, 255, 0);
+  color: #000000;
   font-size: 0.9rem;
   box-sizing: border-box;
   outline: none;
@@ -164,11 +165,12 @@
 
 .auth-input-group input:focus {
   border-color: #00385a;
+  color: #000000;
 }
 
 .auth-error {
   margin: 0 0 14px;
-  color: #b3261e;
+  color: #005a15;
   font-size: 0.82rem;
   text-align: center;
 }
