@@ -1410,7 +1410,7 @@ body {
   font-size: 0.85rem;
 }
 
-.footer-tienda div {
+.footer-tienda > div {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -1419,6 +1419,39 @@ body {
 .footer-tienda strong {
   color: white;
   font-size: 1rem;
+}
+
+.footer-redes {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.footer-red-social {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.footer-red-social svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.footer-red-social:hover {
+  background: white;
+  color: #00385a;
+  transform: translateY(-1px);
 }
 
 .footer-tienda {
@@ -1437,29 +1470,35 @@ body {
 ========================================= */
 
 .promocion-banner {
-
   display: grid;
-
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-
   align-items: center;
-
   min-height: 300px;
-
   margin: 0 0 42px;
-
   overflow: hidden;
+  position: relative;
 
   background:
     radial-gradient(
-      circle at 15% 50%,
-      rgba(99, 102, 241, 0.18),
-      transparent 35%
+      circle at 18% 50%,
+      rgba(37, 99, 235, 0.55),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 42% 15%,
+      rgba(37, 99, 235, 0.30),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 45% 90%,
+      rgba(37, 99, 235, 0.25),
+      transparent 28%
     ),
     linear-gradient(
       135deg,
-      #00385a,
-      #012c47
+      #00385a 0%,
+      #012c47 60%,
+      #00263d 100%
     );
 
   border-radius: var(--radius);
@@ -1467,7 +1506,6 @@ body {
   box-shadow:
     0 20px 45px rgba(0, 56, 90, 0.18);
 }
-
 
 /* =========================================
    IMAGEN

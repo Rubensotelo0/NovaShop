@@ -79,6 +79,48 @@ function HomePage() {
     ? `/?categoria=${categoriaSeleccionada}`
     : '/';
 
+  const redesSociales = [
+    {
+      nombre: 'Instagram',
+      href: 'https://www.instagram.com/',
+      icono: (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+          <circle cx="12" cy="12" r="4.1" fill="none" stroke="currentColor" strokeWidth="1.8" />
+          <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
+        </svg>
+      )
+    },
+    {
+      nombre: 'Facebook',
+      href: 'https://www.facebook.com/',
+      icono: (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.5c0-.9.3-1.6 1.6-1.6H17V2.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.4v2.6H8v3.2h2.3v8h3.2Z" fill="currentColor" />
+        </svg>
+      )
+    },
+    {
+      nombre: 'Twitter',
+      href: 'https://x.com/',
+      icono: (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18.9 2h3.4l-7.5 8.6L22.6 22h-6.8l-5.3-7.6L4.6 22H1.2l8-9.2L1.2 2h7l4.8 6.8L18.9 2Zm-1.2 18h1.9L7.2 3.9H5.2L17.7 20Z" fill="currentColor" />
+        </svg>
+      )
+    },
+    {
+      nombre: 'LinkedIn',
+      href: 'https://www.linkedin.com/',
+      icono: (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+          <path d="M8.2 10.1v7.1M8.2 6.8v.1M12.4 17.2v-4.3c0-1.2.9-2.1 2.1-2.1 1.2 0 2.1.9 2.1 2.1v4.3M12.4 10.1v-1.3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )
+    }
+  ];
+
   return (
     <div className="tienda">
 
@@ -267,18 +309,42 @@ function HomePage() {
         )}
 
         {!busquedaActiva && (
-          <div className="catalogo-header">
+          <div id="sobre-nosotros" className="catalogo-header">
 
   <h2 className="catalogo-label">
     SOBRE <span>NOSOTROS</span>
   </h2>
 
   <p className="catalogo-subtitulo">
-    Descubre nuestra selección de productos pensados para ti.
+    Somos una empresa dirigida a jóvenes y gente en busca de productos de calidad a buen precio, sabemos que conseguir dinero no es fácil y es por eso que ofrecemos los mejores precios del mercado ayudándote a ti y a tu cartera.
   </p>
 
   <p className="catalogo-subtitulo2">
     No solo compras ofertas, también experiencias.
+  </p>
+
+  <h2 className="catalogo-label">
+    CONFÍA Y <span>AHORRA</span> EN <span>NOVASHOP</span>
+  </h2>
+
+  <p className="catalogo-subtitulo">
+    Con 10 años de experiencia preocupandonos por tus gastos, te aseguramos que aquí ahorrarás lo que siempre has deseado.
+  </p>
+
+    <p className="catalogo-subtitulo2">
+    Te ahorrarás el estrés al tener dinero otra vez.
+  </p>
+
+    <h2 className="catalogo-label">
+    TODO <span>VENDERÁS</span> EN <span>NOVASHOP</span>
+  </h2>
+
+  <p className="catalogo-subtitulo">
+    Con nuestra plataforma, olvida el inventario acumulado, vende de manera rápida y segura, sin preocuparte por nada, nosotros nos encargamos de todo.
+  </p>
+
+  <p className="catalogo-subtitulo2">
+    Vendiendo inventarios, ahorrando en gastos.
   </p>
 
   <div className="catalogo-linea"></div>
@@ -300,9 +366,27 @@ function HomePage() {
           </span>
         </div>
 
-        <p>
-          © 2026 NovaShop. Todos los derechos reservados.
-        </p>
+        <div>
+          <div className="footer-redes" aria-label="Redes sociales">
+            {redesSociales.map(({ nombre, href, icono }) => (
+              <a
+                key={nombre}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={nombre}
+                className="footer-red-social"
+              >
+                {icono}
+              </a>
+            ))}
+          </div>
+
+          <span>
+            © 2026 NovaShop. Todos los derechos reservados.
+          </span>
+        </div>
+
 
       </footer>
 

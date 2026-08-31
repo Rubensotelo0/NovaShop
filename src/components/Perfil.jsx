@@ -91,23 +91,50 @@ function Perfil() {
             </div>
           ) : (
             <div className="perfil-pedidos">
-              {historialCompras.map((compra) => (
-                <article className="perfil-pedido" key={compra.id}>
-                  <div>
-                    <strong>{compra.id}</strong>
-                    <p>{new Date(compra.fecha).toLocaleDateString('es-MX')}</p>
-                  </div>
-                  <div className="perfil-pedido-productos">
-                    {compra.items.map((item, index) => (
-                      <div className="perfil-pedido-producto" key={`${compra.id}-${item.nombre}-${index}`}>
-                        <strong>{item.nombre}</strong>
-                        <span>{item.marca || 'Marca no disponible'} · {item.cantidad} unidad{item.cantidad === 1 ? '' : 'es'}</span>
+              {historialCompras.map((compra) => {
+                const marcas = compra.items.map((item) => item.marca || 'N/A');
+
+                return (
+                  <article className="perfil-pedido" key={compra.id}>
+                    <div className="perfil-pedido-header">
+                      <span>Número de compra</span>
+                      <span>Producto</span>
+                      <span>Marca</span>
+                      <span>Cantidad</span>
+                      <span>Fecha</span>
+                      <span>Total</span>
+                    </div>
+
+                    <div className="perfil-pedido-grid">
+                      <strong>{compra.id}</strong>
+
+                      <div className="perfil-pedido-productos">
+                        {compra.items.map((item, index) => (
+                          <div className="perfil-pedido-producto" key={`${compra.id}-${item.nombre}-${index}`}>
+                            <strong>{item.nombre}</strong>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                  <strong>${Number(compra.total).toFixed(2)} MXN</strong>
-                </article>
-              ))}
+
+                      <div className="perfil-pedido-marcas">
+                        {compra.items.map((item, index) => (
+                          <div key={`${compra.id}-marca-${index}`}>{item.marca || 'N/A'}</div>
+                        ))}
+                      </div>
+
+                      <div className="perfil-pedido-cantidades">
+                        {compra.items.map((item, index) => (
+                          <div key={`${compra.id}-cantidad-${index}`}>{item.cantidad}</div>
+                        ))}
+                      </div>
+
+                      <span>{new Date(compra.fecha).toLocaleDateString('es-MX')}</span>
+
+                      <strong>${Number(compra.total).toFixed(2)} MXN</strong>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
         </section>
