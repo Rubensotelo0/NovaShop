@@ -198,6 +198,7 @@ function Header() {
 
       const volverAlMiPerfil = (event) => {
     event.preventDefault();
+        setUsuarioAbierto(false);
     navigate('/perfil');
     window.scrollTo({
       top: 0,
@@ -205,10 +206,15 @@ function Header() {
     });
   };
 
+    const cerrarSesion = () => {
+    logout();
+    navigate('/login');
+  };
+
   const irAlTopCategoria = () => {
-    window.scrollTo({
-      top: window.innerHeight * 1.37,
-      behavior: 'smooth'
+    document.getElementById('catalogo')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
     });
   };
 
@@ -439,9 +445,9 @@ function Header() {
                 {user ? (
                   <>
                   <h3>Mi cuenta</h3>
-                  <p>Usuario: {user.name}</p>
-                   <p>Mi perfil</p>
-                  <button onClick={logout}>Cerrar Sesion</button>
+                  <p>Usuario: {user.name || user.nombre || 'Cliente'}</p>
+                  <p>Mi perfil</p>
+                  <button onClick={cerrarSesion}>Cerrar Sesion</button>
                   </>
                 ) : (
                   <>

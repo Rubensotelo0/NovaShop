@@ -38,13 +38,7 @@ function Auth() {
     setErrorRegistro('');
     setCargandoRegistro(true);
     try {
-      // TODO (backend): reemplazar por el endpoint real, ej:
-      // const res = await fetch('/api/registro', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ nombre, email: emailRegistro, password: passwordRegistro }),
-      // });
-      // if (!res.ok) throw new Error('No se pudo registrar');
+
       console.log('Registro (pendiente de backend):', { nombre, emailRegistro, passwordRegistro });
     } catch (err) {
       setErrorRegistro('No se pudo completar el registro');
@@ -120,7 +114,7 @@ function Auth() {
       <div className="auth-overlay-container">
         <div className="auth-overlay">
           <div className="auth-overlay-panel auth-overlay-left">
-            <h1>Welcome Back!</h1>
+            <h1>Bienvenido</h1>
             <p>Para seguir comprando, inicia sesión con tu cuenta</p>
             <button type="button" className="auth-ghost-button" onClick={() => setModoRegistro(false)}>
               Iniciar Sesión
@@ -128,7 +122,7 @@ function Auth() {
           </div>
 
           <div className="auth-overlay-panel auth-overlay-right">
-            <h1>Hello, Friend!</h1>
+            <h1>Bienvenido</h1>
             <p>Regístrate y empieza a comprar en NovaShop</p>
             <button type="button" className="auth-ghost-button" onClick={() => setModoRegistro(true)}>
               Registrarme

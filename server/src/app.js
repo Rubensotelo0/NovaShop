@@ -14,6 +14,268 @@ app.get('/api/status', (_request, response) => {
   response.json({ ok: true, message: 'NovaShop API activa' });
 });
 
+app.post('/api/login', async (request, response) => {
+  const email = String(request.body?.email ?? '').trim().toLowerCase();
+  const password = String(request.body?.password ?? '');
+
+  if (!email || !password) {
+    return response.status(400).json({ message: 'Correo y contraseña son obligatorios' });
+  }
+
+  try {
+    const [usuarios] = await pool.query(
+      `SELECT id, nombre, email, password
+       FROM usuarios
+       WHERE email = ?
+       LIMIT 1`,
+      [email]
+    );
+
+    if (usuarios.length === 0 || usuarios[0].password !== password) {
+      return response.status(401).json({ message: 'Correo o contraseña incorrectos' });
+    }
+
+    const { password: _password, ...usuarioSegura } = usuarios[0];
+
+    response.json({
+      user: {
+        id: String(usuarioSegura.id),
+        name: usuarioSegura.nombre,
+        nombre: usuarioSegura.nombre,
+        email: usuarioSegura.email
+      }
+    });
+  } catch (error) {
+    console.error('No se pudo iniciar sesión:', error);
+    response.status(500).json({ message: 'No se pudo verificar el inicio de sesión' });
+  }
+});
+
+app.post('/api/register', async (request, response) => {
+  const nombre = String(request.body?.nombre ?? '').trim();
+  const email = String(request.body?.email ?? '').trim().toLowerCase();
+  const password = String(request.body?.password ?? '');
+
+  if (!nombre || !email || !password) {
+    return response.status(400).json({ message: 'Nombre, correo y contraseña son obligatorios' });
+  }
+
+  if (password.length < 6) {
+    return response.status(400).json({ message: 'La contraseña debe tener al menos 6 caracteres' });
+  }
+
+  try {
+    const [usuariosExistentes] = await pool.query(
+      `SELECT id FROM usuarios WHERE email = ? LIMIT 1`,
+      [email]
+    );
+
+    if (usuariosExistentes.length > 0) {
+      return response.status(409).json({ message: 'Este correo ya está registrado' });
+    }
+
+    const [resultado] = await pool.query(
+      `INSERT INTO usuarios (nombre, email, password)
+       VALUES (?, ?, ?)`,
+      [nombre, email, password]
+    );
+
+    const [usuarioCreado] = await pool.query(
+      `SELECT id, nombre, email FROM usuarios WHERE id = ? LIMIT 1`,
+      [resultado.insertId]
+    );
+
+    const usuario = usuarioCreado[0];
+
+    response.status(201).json({
+      user: {
+        id: String(usuario.id),
+        name: usuario.nombre,
+        nombre: usuario.nombre,
+        email: usuario.email
+      }
+    });
+  } catch (error) {
+    console.error('No se pudo registrar el usuario:', error);
+    response.status(500).json({ message: 'No se pudo crear la cuenta' });
+  }
+});
+
+app.post('/api/checkout', async (request, response) => {
+  const userId = Number(request.body?.userId);
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    return response.status(401).json({ message: 'Debes iniciar sesión para completar la compra' });
+  }
+
+  const [usuarios] = await pool.query(
+    `SELECT id FROM usuarios WHERE id = ? LIMIT 1`,
+    [userId]
+  );
+
+  if (usuarios.length === 0) {
+    return response.status(401).json({ message: 'Usuario no válido para la compra' });
+  }
+
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const carritoId = await getOrCreateActiveCart(connection);
+    const [items] = await connection.query(`
+      SELECT
+        dc.producto_id,
+        dc.cantidad,
+        p.nombre,
+        p.precio,
+        p.descuento,
+        p.stock
+      FROM detalle_carritos dc
+      INNER JOIN productos p ON p.id = dc.producto_id
+      WHERE dc.carrito_id = ?
+      ORDER BY dc.id
+    `, [carritoId]);
+
+    if (items.length === 0) {
+      await connection.rollback();
+      return response.status(400).json({ message: 'El carrito está vacío' });
+    }
+
+    let totalPedido = 0;
+
+    for (const item of items) {
+      const cantidadSolicitada = Number(item.cantidad);
+      const stockDisponible = Number(item.stock);
+
+      if (cantidadSolicitada > stockDisponible) {
+        await connection.rollback();
+        return response.status(400).json({
+          message: `No hay stock suficiente para ${item.nombre}`
+        });
+      }
+
+      const precioUnitario = Number(item.precio);
+      const descuento = Number(item.descuento || 0);
+      const subtotal = precioUnitario * (1 - descuento / 100) * cantidadSolicitada;
+      totalPedido += subtotal;
+    }
+
+    const [pedido] = await connection.query(`
+      INSERT INTO pedidos (usuario_id, total, estado)
+      VALUES (?, ?, 'pendiente')
+    `, [userId, Number(totalPedido.toFixed(2))]);
+
+    for (const item of items) {
+      const precioUnitario = Number(item.precio);
+      const descuento = Number(item.descuento || 0);
+      const cantidadSolicitada = Number(item.cantidad);
+      const subtotal = precioUnitario * (1 - descuento / 100) * cantidadSolicitada;
+
+      await connection.query(`
+        INSERT INTO detalle_pedidos (
+          pedido_id,
+          producto_id,
+          cantidad,
+          precio_unitario,
+          descuento,
+          subtotal
+        ) VALUES (?, ?, ?, ?, ?, ?)
+      `, [
+        pedido.insertId,
+        item.producto_id,
+        cantidadSolicitada,
+        Number(precioUnitario.toFixed(2)),
+        Number(descuento.toFixed(2)),
+        Number(subtotal.toFixed(2))
+      ]);
+
+      await connection.query(`
+        UPDATE productos
+        SET stock = stock - ?
+        WHERE id = ?
+      `, [cantidadSolicitada, item.producto_id]);
+    }
+
+    await connection.query(`
+      DELETE FROM detalle_carritos
+      WHERE carrito_id = ?
+    `, [carritoId]);
+
+    await connection.commit();
+
+    response.status(201).json({
+      ok: true,
+      pedidoId: pedido.insertId,
+      total: Number(totalPedido.toFixed(2))
+    });
+  } catch (error) {
+    await connection.rollback();
+    console.error('No se pudo completar la compra:', error);
+    response.status(500).json({ message: 'No se pudo completar la compra' });
+  } finally {
+    connection.release();
+  }
+});
+
+app.get('/api/perfil/:userId/pedidos', async (request, response) => {
+  const userId = Number(request.params.userId);
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    return response.status(400).json({ message: 'Usuario inválido' });
+  }
+
+  try {
+    const [pedidos] = await pool.query(`
+      SELECT
+        p.id,
+        p.total,
+        p.creado_en AS fecha,
+        p.estado
+      FROM pedidos p
+      WHERE p.usuario_id = ?
+      ORDER BY p.id DESC
+    `, [userId]);
+
+    const historial = [];
+
+    for (const pedido of pedidos) {
+      const [detalle] = await pool.query(`
+        SELECT
+          dp.producto_id AS id,
+          pr.nombre,
+          pr.marca,
+          dp.cantidad,
+          dp.precio_unitario AS precio,
+          dp.subtotal
+        FROM detalle_pedidos dp
+        INNER JOIN productos pr ON pr.id = dp.producto_id
+        WHERE dp.pedido_id = ?
+      `, [pedido.id]);
+
+      historial.push({
+        id: `NS-${pedido.id}`,
+        fecha: pedido.fecha,
+        total: Number(pedido.total),
+        estado: pedido.estado,
+        items: detalle.map((item) => ({
+          id: String(item.id),
+          nombre: item.nombre,
+          marca: item.marca,
+          cantidad: Number(item.cantidad),
+          precio: Number(item.precio),
+          subtotal: Number(item.subtotal)
+        }))
+      });
+    }
+
+    response.json(historial);
+  } catch (error) {
+    console.error('No se pudieron cargar los pedidos del usuario:', error);
+    response.status(500).json({ message: 'No se pudieron cargar los pedidos del usuario' });
+  }
+});
+
 app.get('/api/db-status', async (_request, response) => {
   try {
     await pool.query('SELECT 1');

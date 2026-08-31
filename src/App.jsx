@@ -6,9 +6,7 @@ import Favoritos from './components/Favoritos';
 import Carrito from './components/Carrito';
 import { CarritoProvider } from './context/CarritoProvider';
 import { ProductosProvider } from './context/ProductosProvider';
-import Login from './components/Login';
 import DatosEnvio from './components/DatosEnvio';
-import ConfirmarCompra from './components/ConfirmarCompra';
 import Perfil from './components/Perfil';
 import  ProtectRoute from './components/ProtectedRoute';
 import { AuthProvider } from './components/AuthContext';
@@ -32,12 +30,12 @@ function App() {
               }/>
               <Route path="/datosEnv" element={
                 <ProtectRoute><DatosEnvio/></ProtectRoute>}/>
-              <Route path="/confirmCompra" element={<ProtectRoute><ConfirmarCompra/></ProtectRoute>}/>
               <Route path="/productos/:id" element={<DetalleProducto />}/>
               <Route path="/favoritos" element={<ProtectRoute><Favoritos/></ProtectRoute>} />
               <Route path="/carrito" element={<ProtectRoute><Carrito /></ProtectRoute>}/>
               <Route path="/login" element={<Auth/>}/>
               <Route path="/registro" element={<Auth/>}/>
+
             </Routes>
           </PageTransition>
         </CarritoProvider>

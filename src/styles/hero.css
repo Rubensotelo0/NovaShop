@@ -4,24 +4,19 @@
 
 .hero-container {
   position: relative;
-
   width: 100%;
   max-width: 1500px;
-  height: 500px;
+
+  aspect-ratio: 1500 / 550;
+  height: auto;
 
   margin: 28px auto 0;
-
   overflow: hidden;
-
   border-radius: 20px;
-
   background: #00385a;
-
   cursor: pointer;
 
-  box-shadow:
-    0 12px 35px rgba(0, 30, 50, 0.14);
-
+  box-shadow: 0 12px 35px rgba(0, 30, 50, 0.14);
   isolation: isolate;
 }
 
@@ -233,12 +228,7 @@
 
   .hero-container {
     width: calc(100% - 28px);
-
-    height: 330px;
-
-    margin-top: 18px;
-
-    border-radius: 16px;
+    aspect-ratio: 4 / 3;
   }
 
   .hero-overlay {

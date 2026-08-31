@@ -267,7 +267,7 @@ function HomePage() {
         )}
 
         {!busquedaActiva && (
-          <div id="catalogo" className="catalogo-header">
+          <div className="catalogo-header">
 
   <h2 className="catalogo-label">
     SOBRE <span>NOSOTROS</span>
